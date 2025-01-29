@@ -95,61 +95,59 @@
             <li>Temperature [relevant script: ]</li>
             <li>Precipitation [relevant script: ]</li>
         </ul>
-
-        <h3>3. Analysis of Precipitation trends</h3>
-        <ul>
-            <li>Overview of the mapping approach</li>
-            <li>Datasets used (satellite imagery [relevant script: 4_Sentinel2], ground truth data)</li>
-            <li>Models and algorithms employed</li>
-            <li>Visual Assessment [relevant script: 5_classification]</li>
-            <li>Accuracy Assessment [relevant script: 3_Worldcover_cropland_accuracy]</li>
-            <li>Conclusion (key findings, future directions and recommendations)</li>
-        </ul>
         
 
-        <h2>Regions of Interest</h2>
+        <h2>To generate temperature trends use the following [script]</h2>
       Google Earth Engine Boundary code:
         <pre style="background-color: lightgray">
     <code>
-    var AEZ = ee.FeatureCollection("users/izvonkov/Senegal/ZEF_AgroEcoZones")
-
-    function getAOIFromAEZ(zoneList){
-    return AEZ.filter(ee.Filter.inList('Zone', ee.List(zoneList)))
-    }
-
-    var roi = getAOIFromAEZ(["Senegal River Valley", "Ferlo"])
-    Map.addLayer(roi, {}, "River Valley and Ferlo")
+          //import country boundary
+          var dataset = ee.FeatureCollection("USDOS/LSIB_SIMPLE/2017")
+          //Filter the country boundary to study area
+          var kenya = dataset.filter(ee.Filter.eq('country_na', 'Kenya')) //can change this to whatever region of interest
+          Map.centerObject(kenya,6)
+          //Map.addLayer(dataset,{}, 'World Country')
+          Map.addLayer(kenya,{}, 'Kenya')
     </code>
         </pre>
 
 
-Group 2 Google Earth Engine Boundary code:
+Load Data Collection:
 <pre style="background-color: lightgray">
     <code>
-
-    var AEZ = ee.FeatureCollection("users/izvonkov/Senegal/ZEF_AgroEcoZones")
-
-    function getAOIFromAEZ(zoneList){
-    return AEZ.filter(ee.Filter.inList('Zone', ee.List(zoneList)))
-    }
-
-    var roi = getAOIFromAEZ(["Niayes", "Groundnut Basin"])
-    Map.addLayer(roi, {}, "Niayes and Groundnut Basin")
+        //Load data collection
+        var dataset = ee.ImageCollection("ECMWF/ERA5_LAND/MONTHLY_AGGR")
+        .select('temperature_2m')        
+        // Scale to Kelvin and convert to Celsius, set image acquisition time.
+        var dataset_convert = dataset.map(function(img) {
+          return img
+            .subtract(273.15)
+            .copyProperties(img, ['system:time_start']);
+        });        
+        //define date range of interest 
+        var Era5_TREND = dataset_convert.filterDate('1981-01-01','2023-12-31');
+        
+        var MeanAirTemp = Era5_TREND.mean()
     </code>
 </pre>
 
 
-Group 3 Google Earth Engine Boundary code:
+Chart the full time series for your AOI:
 <pre style="background-color: lightgray">
     <code>
-    var AEZ = ee.FeatureCollection("users/izvonkov/Senegal/ZEF_AgroEcoZones")
-
-    function getAOIFromAEZ(zoneList){
-    return AEZ.filter(ee.Filter.inList('Zone', ee.List(zoneList)))
-    }
-
-    var roi = getAOIFromAEZ(["Casamance", "Eastern Senegal"])
-    Map.addLayer(roi, {}, "Casamance and Eastern")
+        //Chart the full time series for your AOI
+        var TS1 = ui.Chart.image.series (Era5_TREND, kenya, ee.Reducer.mean(),1000,'system:time_start').setOptions({
+          title:'Average LST from 1981-2023(ERA5)', 
+          vAxis: {title: '°C'}, });
+        
+        print(TS1);
+        
+        var tempVisParams = {
+          min:15,
+          max:30,
+          palette: ['2b83ba','abdda4','ffffbf', 'ff6227', 'ff4500']
+        }
+        Map.addLayer(MeanAirTemp.clip(kenya), tempVisParams, 'Mean AirTemp 1981-2023')
     </code>
 </pre>
 
