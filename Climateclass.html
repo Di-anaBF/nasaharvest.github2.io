@@ -39,7 +39,7 @@
         <br>
         <br>
         <strong>
-            Dates: February 12-13, 2025
+            Dates: February 11-19, 2025
         </strong>
         <p>
           This course aims at equiping students with the ability to simply analyze temperature and precipitation patterns using 
@@ -100,7 +100,8 @@
     //import country boundary
     var dataset = ee.FeatureCollection("USDOS/LSIB_SIMPLE/2017")
     //Filter the country boundary to study area
-    var kenya = dataset.filter(ee.Filter.eq('country_na', 'Kenya')) //can change this to whatever region of interest
+    var kenya = dataset.filter(ee.Filter.eq('country_na', 'Kenya'))
+    //can change this to whatever region of interest
     Map.centerObject(kenya,6)
     //Map.addLayer(dataset,{}, 'World Country')
     Map.addLayer(kenya,{}, 'Kenya')
@@ -132,7 +133,8 @@ Chart the full time series for your AOI:
 <pre style="background-color: lightgray">
     <code>
       //Chart the full time series for your AOI
-      var TS1 = ui.Chart.image.series (Era5_TREND, kenya, ee.Reducer.mean(),1000,'system:time_start').setOptions({
+      var TS1 = ui.Chart.image.series (Era5_TREND, kenya, ee.Reducer.mean(),1000,
+      'system:time_start').setOptions({
       title:'Average LST from 1981-2023(ERA5)', 
       vAxis: {title: '°C'}, });
         
@@ -161,8 +163,9 @@ Chart the full time series for your AOI:
 <pre style="background-color: lightgray">
     <code>
 
-      Nakalembe, C., Frimpong, D. B., Kerner, H. R., & Sarr, M. A. (2024). A 40-Year Remote Sensing Analysis of 
-      Spatiotemporal Temperature and Rainfall Patterns in Senegal. https://doi.org/10.31223/X55X21
+      Nakalembe, C., Frimpong, D. B., Kerner, H. R., & Sarr, M. A. (2024). A 40-Year Remote Sensing
+      Analysis of Spatiotemporal Temperature and Rainfall Patterns in Senegal. 
+      https://doi.org/10.31223/X55X21
 
     </code>
 </pre>
