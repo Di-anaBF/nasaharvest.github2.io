@@ -1,1 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Senegal 2024</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,300" rel="stylesheet" type="text/css">
+    <link rel="icon" href="assets/NASA_Harvest_favicon.png">
+    <link rel="stylesheet" type="text/css" rel="noopener" target="_blank" href="main.css">
+  </head>
+  
+  <body>
+    <!-- Header -->
+    <div id="navbar">
+        <a href="https://nasaharvest.github.io/">
+            <div id="logo">
+                <img src="assets/logo.png"/>
+                <div id="logotext">
+                <h1>NASA Harvest</h1>
+                <h3>Machine Learning</h3>
+                </div>
+            </div>
+        </a>
+        <div class="menu">
+        <a href="https://nasaharvest.github.io/">About</a>
+        <a href="https://nasaharvest.github.io/#sessions">Sessions</a>
+        <a href="https://nasaharvest.github.io/#profiles">Team</a>
+        </div>
+    </div>
+    
+    <!-- Main -->
+    <div id="content50">
+        <h1>Basic Approach to Analyzing Spatiotemporal Temperature & Rainfall Patterns</h1>
+        <a href="https://forms.gle/yQ2Sfps39zqnaCE48">Pre-training Survey</a>
+        &nbsp;|&nbsp;
+        <a href="#schedule">Schedule</a>
+        &nbsp;|&nbsp;
+        <a href="#project">Mapping Project</a>
+        &nbsp;|&nbsp;
+        <a href="#helmets">Helmets Labeling Crops</a>
+        &nbsp;|&nbsp;
+        <a href="#resources">Resources</a>
+        <br>
+        <br>
+        <strong>
+            Dates: February 12-13, 2025
+        </strong>
+        <p>
+          This course aims at equiping students with the ability to simply analyze temperature and precipitation patterns using 
+          Google Earth Engine on any geographical region of interest.
+        </p>
 
+        <strong>Class led by</strong>
+        <ul>
+          <li>Diana Botchway Frimpong, Faculty Specialist – UMD/NASA Harvest</li>
+          <li>Catherine Nakalembe, Assistant Professor, University of Maryland (UMD)</li>
+        </ul>
+         
+
+        <h1 id="schedule">Course Presentation</h1>
+        <iframe 
+            width="100%"
+            height="620"
+            src="https://docs.google.com/presentation/d/e/2PACX-1vTdWe5GTr9Stt_8gIuM519UEpzOZyeC8OP1mmK4GZOUgaT1rCceUSJyv3DIWbUGXuHtuuCROCk6XSUn/pub?start=true&loop=true&delayms=3000">
+        </iframe>
+        
+        <h1 id="project">Cropland Mapping Project</h1>
+        
+        <a href="https://code.earthengine.google.com/?accept_repo=users/izvonkov/crop-mapping-senegal">Google Earth Engine Repository containing all relevant scripts</a>
+        <br/><br/>
+
+        <h2>Presentation</h2>
+
+        <h3>1. Understand crops within the area of interest</h3>
+        <ul>
+            <li>Overview of region (geography, location, population)</li>
+            <li>Climatology (climate zones, precipitation patterns)</li>
+            <li>Physical characteristics (soils, elevation)</li>
+            <li>Socioeconomic factors (economics, agriculture, food security, staple foods)</li>
+            <li>Crop dynamics (challenges in crop production, crop calendars)</li>
+        </ul>
+        
+
+        <h3>2. Analysis of two existing maps</h3>
+        <ul>
+            <li>Visual Assessment [relevant script: 1_Worldcover_cropland, 2_visualizing_all_maps]</li>
+            <li>Accuracy Assessment [relevant script: 3_Worldcover_cropland_accuracy]</li>
+        </ul>
+
+        <h3>3. Create cropland for the region</h3>
+        <ul>
+            <li>Overview of the mapping approach</li>
+            <li>Datasets used (satellite imagery [relevant script: 4_Sentinel2], ground truth data)</li>
+            <li>Models and algorithms employed</li>
+            <li>Visual Assessment [relevant script: 5_classification]</li>
+            <li>Accuracy Assessment [relevant script: 3_Worldcover_cropland_accuracy]</li>
+            <li>Conclusion (key findings, future directions and recommendations)</li>
+        </ul>
+        
+
+        <h2>Regions of Interest</h2>
+        Group 1 Google Earth Engine Boundary code:
+        <pre style="background-color: lightgray">
+    <code>
+    var AEZ = ee.FeatureCollection("users/izvonkov/Senegal/ZEF_AgroEcoZones")
+
+    function getAOIFromAEZ(zoneList){
+    return AEZ.filter(ee.Filter.inList('Zone', ee.List(zoneList)))
+    }
+
+    var roi = getAOIFromAEZ(["Senegal River Valley", "Ferlo"])
+    Map.addLayer(roi, {}, "River Valley and Ferlo")
+    </code>
+        </pre>
+
+
+Group 2 Google Earth Engine Boundary code:
+<pre style="background-color: lightgray">
+    <code>
+
+    var AEZ = ee.FeatureCollection("users/izvonkov/Senegal/ZEF_AgroEcoZones")
+
+    function getAOIFromAEZ(zoneList){
+    return AEZ.filter(ee.Filter.inList('Zone', ee.List(zoneList)))
+    }
+
+    var roi = getAOIFromAEZ(["Niayes", "Groundnut Basin"])
+    Map.addLayer(roi, {}, "Niayes and Groundnut Basin")
+    </code>
+</pre>
+
+
+Group 3 Google Earth Engine Boundary code:
+<pre style="background-color: lightgray">
+    <code>
+    var AEZ = ee.FeatureCollection("users/izvonkov/Senegal/ZEF_AgroEcoZones")
+
+    function getAOIFromAEZ(zoneList){
+    return AEZ.filter(ee.Filter.inList('Zone', ee.List(zoneList)))
+    }
+
+    var roi = getAOIFromAEZ(["Casamance", "Eastern Senegal"])
+    Map.addLayer(roi, {}, "Casamance and Eastern")
+    </code>
+</pre>
+
+    <h1 id="helmets">Helmets Labeling Crops</h1>
+    <ol>
+        <li><a href="https://nasaharvest.github.io/helmets">Data Collection</a></li>
+        <li><a href="https://github.com/nasaharvest/street2sat/blob/main/gcp/instructions-for-uploading.md">Data Upload</a></li>
+        <li><a href="https://colab.research.google.com/github/nasaharvest/street2sat/blob/gopro2crop/notebooks/GoPro2CropKMZ.ipynb">Data Processing</a></li>
+        <li><a href="https://docs.google.com/document/d/1OCF2gpCQQbZP-y6xcTbKE2OzhkxMtyaJi8wiWi8jfzs/edit?usp=sharing">Data Quality Assessment</a></li>
+    </ol>
+
+
+        <h1 id="resources">Resources</h1>
+        <ul>
+            <li><a href="https://docs.google.com/presentation/d/10WQ7v7v7M3ULIxptuKNbnJytF9xt8W4RpJr-MmEqC7Q/edit#slide=id.p">Whiteboard</a></li>
+            <li>
+                <a href="https://code.earthengine.google.com/a50e138bcb63a943d45202466f787a7d?accept_repo=users%2Fizvonkov%2Fcrop-mapping-senegal">Google Earth Engine Cropland Change Example Script</a>
+            </li>
+        </ul>
+
+    </div> 
+  </body>
+</html>
