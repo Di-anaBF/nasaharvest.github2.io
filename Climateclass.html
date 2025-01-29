@@ -135,19 +135,19 @@ Load Data Collection:
 Chart the full time series for your AOI:
 <pre style="background-color: lightgray">
     <code>
-        //Chart the full time series for your AOI
-        var TS1 = ui.Chart.image.series (Era5_TREND, kenya, ee.Reducer.mean(),1000,'system:time_start').setOptions({
-          title:'Average LST from 1981-2023(ERA5)', 
-          vAxis: {title: '°C'}, });
+      //Chart the full time series for your AOI
+      var TS1 = ui.Chart.image.series (Era5_TREND, kenya, ee.Reducer.mean(),1000,'system:time_start').setOptions({
+      title:'Average LST from 1981-2023(ERA5)', 
+      vAxis: {title: '°C'}, });
         
-        print(TS1);
+      print(TS1);
         
-        var tempVisParams = {
-          min:15,
-          max:30,
-          palette: ['2b83ba','abdda4','ffffbf', 'ff6227', 'ff4500']
-        }
-        Map.addLayer(MeanAirTemp.clip(kenya), tempVisParams, 'Mean AirTemp 1981-2023')
+      var tempVisParams = {
+        min:15,
+        max:30,
+        palette: ['2b83ba','abdda4','ffffbf', 'ff6227', 'ff4500']
+      }
+      Map.addLayer(MeanAirTemp.clip(kenya), tempVisParams, 'Mean AirTemp 1981-2023')
     </code>
 </pre>
 
