@@ -106,10 +106,10 @@
         //import country boundary
         var dataset = ee.FeatureCollection("USDOS/LSIB_SIMPLE/2017")
         //Filter the country boundary to study area
-        var Tanzania = dataset.filter(ee.Filter.eq('country_na', 'Tanzania')
-        Map.centerObject(Tanzania,6)
+        var aoi = dataset.filter(ee.Filter.eq('country_na', 'Senegal')
+        Map.centerObject(aoi,6)
         //Map.addLayer(dataset,{}, 'World Country')
-        Map.addLayer(Tanzania,{}, 'Tanzania')
+        Map.addLayer(aoi,{}, 'Senegal')
     </code>
         </pre>
 
@@ -124,8 +124,8 @@ Load Data Collection:
         return img.subtract(273.15)
         .copyProperties(img, ['system:time_start']);
         });
-        //define date range of interest "Tanzania"
-        var Era5_TREND = dataset_convert.filterDate('1981-01-01','2020-12-31');
+        //define date range of interest "Senegal"
+        var Era5_TREND = dataset_convert.filterDate('1981-01-01','2023-12-31');
         var MeanAirTemp = Era5_TREND.mean()
     </code>
 </pre>
@@ -135,16 +135,16 @@ Time series chart for your AOI:
 <pre style="background-color: lightgray">
     <code>
           //Chart the full time series for Senegal region
-          var TS1 = ui.Chart.image.series (Era5_TREND, Tanzania, ee.Reducer.mean(),
+          var TS1 = ui.Chart.image.series (Era5_TREND, aoi, ee.Reducer.mean(),
           1000,'system:time_start').setOptions({
-            title:'Average LST from 1981-2020(ERA5)', 
+            title:'Average LST from 1981-2023(ERA5)', 
             vAxis: {title: '°C'}, });
           
           print(TS1);
           
           //Chart a single year
           var temp1year = Era5_TREND.filterDate('2020-01-01','2020-12-31');
-          var TS2 = ui.Chart.image.series (temp1year, Tanzania, ee.Reducer.mean(),1000,
+          var TS2 = ui.Chart.image.series (temp1year, aoi, ee.Reducer.mean(),1000,
           'system:time_start').setOptions({
           title: 'Average Temperature for 2020',
           vAxis: {title: 'mm/pentad'}, });
@@ -159,14 +159,14 @@ Time series chart for your AOI:
             '#cd1c18', '#780606'],
             values: [19,20,21,22,23,24,25,26]
           }
-          Map.addLayer(MeanAirTemp.clip(Tanzania), palette, 'Mean AirTemp 1981-2020')
+          Map.addLayer(MeanAirTemp.clip(aoi), palette, 'Mean AirTemp 1981-2023')
     </code>
 </pre>
 
 
         <h1 id="resources">Resources</h1>
         <ul>
-            <li><a href="https://doi.org/10.31223/X55X21">Research Paper-A 40-Year Remote Sensing Analysis of 
+            <li><a href="https://doi.org/10.3389/fclim.2025.1462626">Research Paper-A 40-Year Remote Sensing Analysis of 
       Spatiotemporal Temperature and Rainfall Patterns in Senegal</a></li>
             <li>
                 <a href="https://diana-botchway-frimpong.users.earthengine.app/view/climate-trends---senegal">Climate Trends App</a>
@@ -180,7 +180,7 @@ Time series chart for your AOI:
 
       Nakalembe, C., Frimpong, D. B., Kerner, H. R., & Sarr, M. A. (2024). A 40-Year Remote Sensing
       Analysis of Spatiotemporal Temperature and Rainfall Patterns in Senegal. 
-      https://doi.org/10.31223/X55X21
+      https://doi.org/10.3389/fclim.2025.1462626
 
     </code>
 </pre>
