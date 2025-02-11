@@ -144,7 +144,8 @@ Visualize Map:
       var palette = {
         min:23,
         max:30,
-        palette: ['#305CDE', '#6E8DE8', '#97ADEE' ,'#C0CDF5', '#ffffff', '#ED6C69', '#cd1c18', '#780606'],
+        palette: ['#305CDE', '#6E8DE8', '#97ADEE' ,'#C0CDF5', '#ffffff',
+        '#ED6C69', '#cd1c18', '#780606'],
         values: [23,24,25,26,27,28,29,30]
       }
       Map.addLayer(MeanAirTemp.clip(aoi), palette, 'Mean AirTemp 1981-2020')
@@ -167,38 +168,36 @@ Visualize Map:
 Creating a Trend Graph using SenSlope in R:
 <pre style="background-color: lightgray">
     <code>
-library(ggplot2)
-library(reshape)
-library(readxl)
-library(ggpubr)
-library(tidyverse)
-library(rlang)
-library(cowplot)
-library(trend)
-
-
-ggplot(Temperaturetrend_EntireSenegal, aes(Year, `Average_Temperature`))+geom_point()+geom_line()
-geom_smooth(method = "lm", se=FALSE)
-
-#Plot for the Entire Senegal
-ggplot(Temperaturetrend_EntireSenegal, aes(x= Year, y= `Average_Temperature`), add= "reg.line"
-      , conf.int=TRUE,
-       cor.coef=TRUE)+geom_point()+geom_line()+geom_smooth(method = "lm",col= "red",
-                                                           se=FALSE, formula = y~x)+
-  theme_classic()+labs(x="Year",y="(C°)")+
-  annotate("text", x=1990, y= 29.4, label="P = 0.001378, R2 = 0.2388")+
-  annotate("text", x=1990, y= 29.5, label="Sen's slope =0.0174")
-
-#Calculating R squared
-Temperaturetrend_EntireSenegal %>%
-  lm(Year ~ `Average_Temperature`, data = .) %>%
-  summary()
-
-
-library(trend)
-#Calculating MK and Sen Slope
-mk.test(Temperaturetrend_EntireSenegal$`Average_Temperature`)
-sens.slope(Temperaturetrend_EntireSenegal$`Average_Temperature`)
+    library(ggplot2)
+    library(reshape)
+    library(readxl)
+    library(ggpubr)
+    library(tidyverse)
+    library(rlang)
+    library(cowplot)
+    library(trend)
+    
+    ggplot(Temperaturetrend_EntireSenegal, aes(Year, `Average_Temperature`))+geom_point()+geom_line()
+    geom_smooth(method = "lm", se=FALSE)
+    
+    #Plot for the Entire Senegal
+    ggplot(Temperaturetrend_EntireSenegal, aes(x= Year, y= `Average_Temperature`), add= "reg.line"
+          , conf.int=TRUE,
+           cor.coef=TRUE)+geom_point()+geom_line()+geom_smooth(method = "lm",col= "red",
+                                                               se=FALSE, formula = y~x)+
+      theme_classic()+labs(x="Year",y="(C°)")+
+      annotate("text", x=1990, y= 29.4, label="P = 0.001378, R2 = 0.2388")+
+      annotate("text", x=1990, y= 29.5, label="Sen's slope =0.0174")
+    
+    #Calculating R squared
+    Temperaturetrend_EntireSenegal %>%
+      lm(Year ~ `Average_Temperature`, data = .) %>%
+      summary()
+    
+    library(trend)
+    #Calculating MK and Sen Slope
+    mk.test(Temperaturetrend_EntireSenegal$`Average_Temperature`)
+    sens.slope(Temperaturetrend_EntireSenegal$`Average_Temperature`)
     </code>
 </pre>
 
