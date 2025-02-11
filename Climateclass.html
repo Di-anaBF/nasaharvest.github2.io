@@ -100,21 +100,18 @@
         
 
         <h2>Breakdown of Script</h2>
-      Google Earth Engine Boundary code:
+     Import Country Boundary:
         <pre style="background-color: lightgray">
     <code>
-// ###############################import country boundary##################
-var dataset = ee.FeatureCollection("USDOS/LSIB_SIMPLE/2017")
-
-
-//Filter the country boundary to study area
-var aoi = dataset.filter(ee.Filter.eq('country_na', 'Senegal'))
-      //can change to region of interest
-Map.centerObject(aoi,6)
-
-
-//Map.addLayer(dataset,{}, 'World Country')
-Map.addLayer(aoi,{}, 'Senegal')
+    var dataset = ee.FeatureCollection("USDOS/LSIB_SIMPLE/2017")
+  
+    //Filter the country boundary to study area
+    var aoi = dataset.filter(ee.Filter.eq('country_na', 'Senegal'))
+          //can change to region of interest
+    Map.centerObject(aoi,6)
+    
+    //Map.addLayer(dataset,{}, 'World Country')
+    Map.addLayer(aoi,{}, 'Senegal')
     </code>
         </pre>
 
@@ -122,24 +119,21 @@ Map.addLayer(aoi,{}, 'Senegal')
 Load Data Collection:
 <pre style="background-color: lightgray">
     <code>
-// ###############################Load data collection################
-
-var dataset = ee.ImageCollection("ECMWF/ERA5_LAND/MONTHLY_AGGR")
-.select('temperature_2m')
-
-//Scale to Kelvin and convert to Celsius, set image acquisition time.
-var dataset_convert = dataset.map(function(img) {
-  return img
-    .subtract(273.15)
-    .copyProperties(img, ['system:time_start']);
-});
-
-//define date range of interest "for your AOI"/Same for seasonal
-var Era5_TREND = dataset_convert.filterDate('1981-01-01','2020-12-31')
-.filter(ee.Filter.calendarRange(1, 12, 'month'))
-
-
-var MeanAirTemp = Era5_TREND.mean()
+    var dataset = ee.ImageCollection("ECMWF/ERA5_LAND/MONTHLY_AGGR")
+    .select('temperature_2m')
+    
+    //Scale to Kelvin and convert to Celsius, set image acquisition time.
+    var dataset_convert = dataset.map(function(img) {
+      return img
+        .subtract(273.15)
+        .copyProperties(img, ['system:time_start']);
+    });
+    
+    //define date range of interest "for your AOI"/Same for seasonal
+    var Era5_TREND = dataset_convert.filterDate('1981-01-01','2020-12-31')
+    .filter(ee.Filter.calendarRange(1, 12, 'month'))
+    
+    var MeanAirTemp = Era5_TREND.mean()
     </code>
 </pre>
 
@@ -147,27 +141,25 @@ var MeanAirTemp = Era5_TREND.mean()
 Visualize Map:
 <pre style="background-color: lightgray">
     <code>
-// ##############################Visualize the map##################
-var palette = {
-  min:23,
-  max:30,
-  palette: ['#305CDE', '#6E8DE8', '#97ADEE' ,'#C0CDF5', '#ffffff', '#ED6C69', '#cd1c18', '#780606'],
-  values: [23,24,25,26,27,28,29,30]
-}
-Map.addLayer(MeanAirTemp.clip(aoi), palette, 'Mean AirTemp 1981-2020')
+      var palette = {
+        min:23,
+        max:30,
+        palette: ['#305CDE', '#6E8DE8', '#97ADEE' ,'#C0CDF5', '#ffffff', '#ED6C69', '#cd1c18', '#780606'],
+        values: [23,24,25,26,27,28,29,30]
+      }
+      Map.addLayer(MeanAirTemp.clip(aoi), palette, 'Mean AirTemp 1981-2020')
     </code>
 </pre>
 
  Time series chart for your AOI:
 <pre style="background-color: lightgray">
     <code>
-// #######################################Time series Chart for AOI###########
-var TS1 = ui.Chart.image.series (Era5_TREND, aoi, ee.Reducer.mean(),1000,
-      'system:time_start').setOptions({
-title:'Average LST from 1981-2023(ERA5)', 
-  vAxis: {title: '°C'}, });
-
-// print(TS1);
+    var TS1 = ui.Chart.image.series (Era5_TREND, aoi, ee.Reducer.mean(),1000,
+          'system:time_start').setOptions({
+    title:'Average LST from 1981-2023(ERA5)', 
+      vAxis: {title: '°C'}, });
+    
+    print(TS1);
     </code>
 </pre>
 
