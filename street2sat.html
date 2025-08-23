@@ -43,8 +43,7 @@
             Dates: August 26, 2025
         </strong>
         <p>
-          This course aims at equiping students with the ability to simply analyze temperature and precipitation patterns using 
-          Google Earth Engine for any geographical region of interest.
+          This tutorial will .......
         </p>
 
         <strong>Led by</strong>
@@ -89,112 +88,153 @@
             <li>Tutorials</li>
         </ul>
         
-        <h3>2. Analysis of climate trends</h3>
-        <ul>
-            <li>Temperature [relevant script:Era5_Temp_Trend]</li>
-            <li>Precipitation [relevant script:Precipitation_Trend]</li>
-        </ul>
         
-
         <h2>Breakdown of Script</h2>
-     Import Country Boundary:
+     Downloads GoPro photos from Google Cloud or Google Drive.:
         <pre style="background-color: lightgray">
     <code>
-    var dataset = ee.FeatureCollection("USDOS/LSIB_SIMPLE/2017")
-  
-    //Filter the country boundary to study area
-    var aoi = dataset.filter(ee.Filter.eq('country_na', 'Senegal'))
-          //can change to region of interest
-    Map.centerObject(aoi,6)
-    
-    //Map.addLayer(dataset,{}, 'World Country')
-    Map.addLayer(aoi,{}, 'Senegal')
+from pathlib import Path
+from google.colab import drive
+
+drive.mount('/content/drive', force_remount=True)
+
+# Login to Google Cloud, once you run this cell click on the space after "browser:" to enter the code
+!gcloud auth login
+# Your current project will be [None] and that is okay.
+
+      print("Select Location of GoPro Photos")
+print("1. Google Cloud Storage (Preferred)")
+print("2. Google Drive")
+selection = input("Enter selection [ 1 / 2 ]: ")
+
+#########################################
+# Download GoPros from Google Cloud
+#########################################
+GCLOUD_PATH_INPUT = ""
+if selection == "1":
+
+    print("\nCopy and paste the path of the Google Cloud Storage folder with GoPro Photos")
+    print("(Example: street2sat-uploaded/KENYA_v2/2021_07_13_T2/100GOPRO)")
+    GCLOUD_PATH_INPUT = input("Path: ")
+
+    GCLOUD_PATH = f"gs://{GCLOUD_PATH_INPUT}/*"
+    PREFIX = GCLOUD_PATH_INPUT.replace("street2sat-uploaded/", "").replace("/", "_")
+    Path(PREFIX).mkdir(exist_ok=True)
+    print(f"\nReady to download images from \n{GCLOUD_PATH} to {PREFIX}")
+
+    # Check amount of photos
+    !gsutil du $GCLOUD_PATH | wc -l
+
+    confirm = input("Confirm? [y/n]: ")
+    if confirm == "y":
+        # 20 mins for 10k images
+        !gsutil -m cp -r $GCLOUD_PATH $PREFIX
+    else:
+        raise print("Cancelled")
+
+#########################################
+# Download GoPros from Google Drive
+#########################################
+elif selection == "2":
+    print("\nPath of Google Drive Folder with photos:")
+    print("(Example: /content/drive/MyDrive/2021-07-05-T1)")
+    PREFIX = input("").replace("/content/", "")
+
+else:
+    raise ValueError(f"Invalid selection: '{selection}'")
+
+      country_is_right_hand_drive = {
+    "KENYA": False,
+    "MADAGASCAR": True
+}
+
+# If country not in prefix, "is_right_hand_drive" has to be set manually
+is_right_hand_drive = None
+
+for country, is_rhs in country_is_right_hand_drive.items():
+    if country in PREFIX.upper():
+        is_right_hand_drive = is_rhs
+        break
+
+
+assert is_right_hand_drive != None, "Drive direction not derived, set 'is_right_hand_drive' manually"
+print("Assuming " + ("right hand drive" if is_right_hand_drive else "left hand drive for:"))
+print(PREFIX)
     </code>
         </pre>
 
 
-Load Data Collection:
+Create a dataframe from photos.:
 <pre style="background-color: lightgray">
     <code>
-    var dataset = ee.ImageCollection("ECMWF/ERA5_LAND/MONTHLY_AGGR")
-    .select('temperature_2m')
-    
-    //Scale to Kelvin and convert to Celsius, set image acquisition time.
-    var dataset_convert = dataset.map(function(img) {
-      return img
-        .subtract(273.15)
-        .copyProperties(img, ['system:time_start']);
-    });
-    
-    //define date range of interest "for your AOI"/Same for seasonal
-    var Era5_TREND = dataset_convert.filterDate('1981-01-01','2020-12-31')
-    .filter(ee.Filter.calendarRange(1, 12, 'month'))
-    
-    var MeanAirTemp = Era5_TREND.mean()
+from datetime import datetime
+from shapely.geometry import Point
+from tqdm import tqdm
+
+import exifread
+import geopandas as gpd
+import pandas as pd
+
+tqdm.pandas()
+
+image_folder = Path(f"/content/{PREFIX}")
+if (not image_folder.exists()):
+    print("STOP: Update image_folder to match the folder of images you downloaded")
+else:
+    gopro_photo_paths = list(image_folder.glob("**/*.JPG")) # May need to switch to .jpg
+    df = pd.DataFrame({"paths": gopro_photo_paths})
+
+len(df)
     </code>
 </pre>
 
 
-Visualize Map:
+Extract dates and coordinates.:
 <pre style="background-color: lightgray">
     <code>
-      var palette = {
-        min:23,
-        max:30,
-        palette: ['#305CDE', '#6E8DE8', '#97ADEE' ,'#C0CDF5', '#ffffff',
-        '#ED6C69', '#cd1c18', '#780606'],
-        values: [23,24,25,26,27,28,29,30]
-      }
-      Map.addLayer(MeanAirTemp.clip(aoi), palette, 'Mean AirTemp 1981-2020')
+
     </code>
 </pre>
 
- Time series chart for your AOI:
+ Move coordinate to field:
 <pre style="background-color: lightgray">
     <code>
-    var TS1 = ui.Chart.image.series (Era5_TREND, aoi, ee.Reducer.mean(),1000,
-          'system:time_start').setOptions({
-    title:'Average LST from 1981-2023(ERA5)', 
-      vAxis: {title: '°C'}, });
-    
-    print(TS1);
+
     </code>
 </pre>
 
+  Classify as crop or not crop.:
+<pre style="background-color: lightgray">
+    <code>
+         
+    </code>
+</pre>
+
+  Segment crops in crop photos:
+<pre style="background-color: lightgray">
+    <code>
+         
+    </code>
+</pre>
+
+Filter out low confidence predictions:
+<pre style="background-color: lightgray">
+    <code>
+         
+    </code>
+</pre>
+
+  Get Admin Zones for each point:
+<pre style="background-color: lightgray">
+    <code>
+         
+    </code>
+</pre>
       
-Creating a Trend Graph using SenSlope in R:
+    Create KMZ file:
 <pre style="background-color: lightgray">
     <code>
-    library(ggplot2)
-    library(reshape)
-    library(readxl)
-    library(ggpubr)
-    library(tidyverse)
-    library(rlang)
-    library(cowplot)
-    library(trend)
-    
-    ggplot(Temperaturetrend_EntireSenegal, aes(Year, `Average_Temperature`))+geom_point()+geom_line()
-    geom_smooth(method = "lm", se=FALSE)
-    
-    #Plot for the Entire Senegal
-    ggplot(Temperaturetrend_EntireSenegal, aes(x= Year, y= `Average_Temperature`), add= "reg.line"
-          , conf.int=TRUE,
-           cor.coef=TRUE)+geom_point()+geom_line()+geom_smooth(method = "lm",col= "red",
-                                                               se=FALSE, formula = y~x)+
-      theme_classic()+labs(x="Year",y="(C°)")+
-      annotate("text", x=1990, y= 29.4, label="P = 0.001378, R2 = 0.2388")+
-      annotate("text", x=1990, y= 29.5, label="Sen's slope =0.0174")
-    
-    #Calculating R squared
-    Temperaturetrend_EntireSenegal %>%
-      lm(Year ~ `Average_Temperature`, data = .) %>%
-      summary()
-    
-    library(trend)
-    #Calculating MK and Sen Slope
-    mk.test(Temperaturetrend_EntireSenegal$`Average_Temperature`)
-    sens.slope(Temperaturetrend_EntireSenegal$`Average_Temperature`)
+         
     </code>
 </pre>
 
