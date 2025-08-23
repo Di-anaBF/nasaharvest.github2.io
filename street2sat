@@ -1,1 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Climateclass 2025</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,300" rel="stylesheet" type="text/css">
+    <link rel="icon" href="assets/NASA_Harvest_favicon.png">
+    <link rel="stylesheet" type="text/css" rel="noopener" target="_blank" href="main.css">
+  </head>
+  
+  <body>
+    <!-- Header -->
+    <div id="navbar">
+        <a href="https://www.xylemlab.org/">
+            <div id="logo">
+                <img src="assets/xylem2.png"/>
+                <div id="logotext">
+                <h1>Xylem Lab</h1>
+                <h3>University Of Maryland</h3>
+                </div>
+            </div>
+        </a>
+        <div class="menu">
+        <a href="https://www.xylemlab.org/about">About</a>
+        <a href="https://www.xylemlab.org/projects">Projects</a>
+        <a href="https://www.xylemlab.org/team">Team</a>
+        </div>
+    </div>
+    
+    <!-- Main -->
+    <div id="content50">
+        <h1>GEOG 422/788 Climate Module</h1>
+        <h2>Basic Approach to Analyzing Spatiotemporal Temperature & Rainfall Patterns</h2>
+        <a href="#presentation">Presentation</a>
+        &nbsp;|&nbsp;
+        <a href="#project">Trends Analysis</a>
+        &nbsp;|&nbsp;
+        <a href="#resources">Resources</a>
+        <br>
+        <br>
+        <strong>
+            Dates: February 18 & 25, 2025
+        </strong>
+        <p>
+          This course aims at equiping students with the ability to simply analyze temperature and precipitation patterns using 
+          Google Earth Engine for any geographical region of interest.
+        </p>
 
+        <strong>Class led by</strong>
+        <ul>
+          <li>Diana Botchway Frimpong, Faculty Specialist – UMD/NASA Harvest</li>
+          <li>Catherine Nakalembe, Assistant Professor, University of Maryland (UMD)</li>
+        </ul>
+
+       <div id="partners">
+            <div class="column">
+                <img 
+                    src="assets/umd-logo.png" 
+                    style="max-height: 4.5em;"/>
+            </div>
+            <div style="padding: 0px 48px">
+                <img src="assets/Harvest_Header_Color_Horizontal_Text.png" style="max-height: 4.5em;"/>
+            </div>
+            <div style="padding: 0px 48px">
+                <img src="assets/xylem.png" style="max-height: 4.5em;"/>
+            </div>
+        </div>
+         
+
+        <h1 id="presentation">Course Presentation</h1>
+
+            <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRMhO2hYEaKoOKDbYxsdeg9pAUrmY2j8kjzuc4W4c06JSbQpskJR4wZiFwT7netJcnz9iq2R_YumdVI/embed?start=false&loop=false&delayms=3000"
+            frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+        
+        <h1 id="project">Climate Trend Analysis</h1>
+        
+        <a href="https://code.earthengine.google.com/?accept_repo=users/Diana_Botchway_Frimpong/climate-trend-analysis-umdgeog">Google Earth Engine Repository containing all relevant scripts</a>
+        <br/><br/>
+
+        <h2>Presentation</h2>
+
+        <h3>1. Introduction to Climate</h3>
+        <ul>
+            <li>Define weather and climate</li>
+            <li>Global warming, climate change-definitions</li>
+            <li>The causes of climate change</li>
+            <li>Some evidences of climate change</li>
+            <li>Why it matters? -Global climate change-effects & impacts</li>
+            <li>Some evidences of climate change</li>
+            <li>Dealing with climate data</li>
+        </ul>
+        
+
+        <h3>2. Analysis of climate trends</h3>
+        <ul>
+            <li>Temperature [relevant script:Era5_Temp_Trend]</li>
+            <li>Precipitation [relevant script:Precipitation_Trend]</li>
+        </ul>
+        
+
+        <h2>Breakdown of Script</h2>
+     Import Country Boundary:
+        <pre style="background-color: lightgray">
+    <code>
+    var dataset = ee.FeatureCollection("USDOS/LSIB_SIMPLE/2017")
+  
+    //Filter the country boundary to study area
+    var aoi = dataset.filter(ee.Filter.eq('country_na', 'Senegal'))
+          //can change to region of interest
+    Map.centerObject(aoi,6)
+    
+    //Map.addLayer(dataset,{}, 'World Country')
+    Map.addLayer(aoi,{}, 'Senegal')
+    </code>
+        </pre>
+
+
+Load Data Collection:
+<pre style="background-color: lightgray">
+    <code>
+    var dataset = ee.ImageCollection("ECMWF/ERA5_LAND/MONTHLY_AGGR")
+    .select('temperature_2m')
+    
+    //Scale to Kelvin and convert to Celsius, set image acquisition time.
+    var dataset_convert = dataset.map(function(img) {
+      return img
+        .subtract(273.15)
+        .copyProperties(img, ['system:time_start']);
+    });
+    
+    //define date range of interest "for your AOI"/Same for seasonal
+    var Era5_TREND = dataset_convert.filterDate('1981-01-01','2020-12-31')
+    .filter(ee.Filter.calendarRange(1, 12, 'month'))
+    
+    var MeanAirTemp = Era5_TREND.mean()
+    </code>
+</pre>
+
+
+Visualize Map:
+<pre style="background-color: lightgray">
+    <code>
+      var palette = {
+        min:23,
+        max:30,
+        palette: ['#305CDE', '#6E8DE8', '#97ADEE' ,'#C0CDF5', '#ffffff',
+        '#ED6C69', '#cd1c18', '#780606'],
+        values: [23,24,25,26,27,28,29,30]
+      }
+      Map.addLayer(MeanAirTemp.clip(aoi), palette, 'Mean AirTemp 1981-2020')
+    </code>
+</pre>
+
+ Time series chart for your AOI:
+<pre style="background-color: lightgray">
+    <code>
+    var TS1 = ui.Chart.image.series (Era5_TREND, aoi, ee.Reducer.mean(),1000,
+          'system:time_start').setOptions({
+    title:'Average LST from 1981-2023(ERA5)', 
+      vAxis: {title: '°C'}, });
+    
+    print(TS1);
+    </code>
+</pre>
+
+      
+Creating a Trend Graph using SenSlope in R:
+<pre style="background-color: lightgray">
+    <code>
+    library(ggplot2)
+    library(reshape)
+    library(readxl)
+    library(ggpubr)
+    library(tidyverse)
+    library(rlang)
+    library(cowplot)
+    library(trend)
+    
+    ggplot(Temperaturetrend_EntireSenegal, aes(Year, `Average_Temperature`))+geom_point()+geom_line()
+    geom_smooth(method = "lm", se=FALSE)
+    
+    #Plot for the Entire Senegal
+    ggplot(Temperaturetrend_EntireSenegal, aes(x= Year, y= `Average_Temperature`), add= "reg.line"
+          , conf.int=TRUE,
+           cor.coef=TRUE)+geom_point()+geom_line()+geom_smooth(method = "lm",col= "red",
+                                                               se=FALSE, formula = y~x)+
+      theme_classic()+labs(x="Year",y="(C°)")+
+      annotate("text", x=1990, y= 29.4, label="P = 0.001378, R2 = 0.2388")+
+      annotate("text", x=1990, y= 29.5, label="Sen's slope =0.0174")
+    
+    #Calculating R squared
+    Temperaturetrend_EntireSenegal %>%
+      lm(Year ~ `Average_Temperature`, data = .) %>%
+      summary()
+    
+    library(trend)
+    #Calculating MK and Sen Slope
+    mk.test(Temperaturetrend_EntireSenegal$`Average_Temperature`)
+    sens.slope(Temperaturetrend_EntireSenegal$`Average_Temperature`)
+    </code>
+</pre>
+
+
+        <h1 id="resources">Resources</h1>
+        <ul>
+            <li><a href="https://doi.org/10.3389/fclim.2025.1462626">Research Paper-A 40-Year Remote Sensing Analysis of 
+      Spatiotemporal Temperature and Rainfall Patterns in Senegal</a></li>
+            <li>
+                <a href="https://diana-botchway-frimpong.users.earthengine.app/view/climate-trends---senegal">Climate Trends App</a>
+            </li>
+          <li><a href="https://climateknowledgeportal.worldbank.org/country-profiles#country-map">Climate Change Knowledge Portal</a></li>
+          </li>
+          <li><a href="https://developers.google.com/earth-engine/tutorials/tutorial_api_01">Introduction to the Google Earth Engine JavaScript API</a></li>
+        </ul>
+
+        If you use our method in your research, please acknowledge us using the following citation:
+<pre style="background-color: lightgray">
+    <code>
+
+      Nakalembe, C., Frimpong, D. B., Kerner, H. R., & Sarr, M. A. (2024). A 40-Year Remote Sensing
+      Analysis of Spatiotemporal Temperature and Rainfall Patterns in Senegal. 
+      https://doi.org/10.3389/fclim.2025.1462626
+
+    </code>
+</pre>
+
+    </div> 
+  </body>
+</html>
