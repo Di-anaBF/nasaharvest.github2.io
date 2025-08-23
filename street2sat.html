@@ -31,7 +31,6 @@
     <!-- Main -->
     <div id="content50">
         <h1>Crop Type Dataset Generated withHelmet-Mounted GoPro's and Deep Learning</h1>
-        <h2>Basic Approach to Analyzing Spatiotemporal Temperature & Rainfall Patterns</h2>
         <a href="#presentation">Presentation</a>
         &nbsp;|&nbsp;
         <a href="#project">Trends Analysis</a>
@@ -71,14 +70,14 @@
             <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRMhO2hYEaKoOKDbYxsdeg9pAUrmY2j8kjzuc4W4c06JSbQpskJR4wZiFwT7netJcnz9iq2R_YumdVI/embed?start=false&loop=false&delayms=3000"
             frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
         
-        <h1 id="project">Climate Trend Analysis</h1>
+        <h1 id="project">GoPro Photos to Crop KMZ</h1>
         
-        <a href="https://code.earthengine.google.com/?accept_repo=users/Diana_Botchway_Frimpong/climate-trend-analysis-umdgeog">Google Earth Engine Repository containing all relevant scripts</a>
+        <a href="https://colab.research.google.com/github/nasaharvest/street2sat/blob/main/notebooks/GoPro2CropKMZ.ipynb">Google Collab Notebook containing all relevant scripts</a>
         <br/><br/>
 
         <h2>Presentation</h2>
 
-        <h3>1. Introduction to Climate</h3>
+        <h3>1. Introduction</h3>
         <ul>
             <li>Crop Type Mapping Hard</li>
             <li>Helmet Labeling Crop</li>
@@ -90,153 +89,17 @@
         
         
         <h2>Breakdown of Script</h2>
-     Downloads GoPro photos from Google Cloud or Google Drive.:
-        <pre style="background-color: lightgray">
-    <code>
-from pathlib import Path
-from google.colab import drive
-
-drive.mount('/content/drive', force_remount=True)
-
-# Login to Google Cloud, once you run this cell click on the space after "browser:" to enter the code
-!gcloud auth login
-# Your current project will be [None] and that is okay.
-
-      print("Select Location of GoPro Photos")
-print("1. Google Cloud Storage (Preferred)")
-print("2. Google Drive")
-selection = input("Enter selection [ 1 / 2 ]: ")
-
-#########################################
-# Download GoPros from Google Cloud
-#########################################
-GCLOUD_PATH_INPUT = ""
-if selection == "1":
-
-    print("\nCopy and paste the path of the Google Cloud Storage folder with GoPro Photos")
-    print("(Example: street2sat-uploaded/KENYA_v2/2021_07_13_T2/100GOPRO)")
-    GCLOUD_PATH_INPUT = input("Path: ")
-
-    GCLOUD_PATH = f"gs://{GCLOUD_PATH_INPUT}/*"
-    PREFIX = GCLOUD_PATH_INPUT.replace("street2sat-uploaded/", "").replace("/", "_")
-    Path(PREFIX).mkdir(exist_ok=True)
-    print(f"\nReady to download images from \n{GCLOUD_PATH} to {PREFIX}")
-
-    # Check amount of photos
-    !gsutil du $GCLOUD_PATH | wc -l
-
-    confirm = input("Confirm? [y/n]: ")
-    if confirm == "y":
-        # 20 mins for 10k images
-        !gsutil -m cp -r $GCLOUD_PATH $PREFIX
-    else:
-        raise print("Cancelled")
-
-#########################################
-# Download GoPros from Google Drive
-#########################################
-elif selection == "2":
-    print("\nPath of Google Drive Folder with photos:")
-    print("(Example: /content/drive/MyDrive/2021-07-05-T1)")
-    PREFIX = input("").replace("/content/", "")
-
-else:
-    raise ValueError(f"Invalid selection: '{selection}'")
-
-      country_is_right_hand_drive = {
-    "KENYA": False,
-    "MADAGASCAR": True
-}
-
-# If country not in prefix, "is_right_hand_drive" has to be set manually
-is_right_hand_drive = None
-
-for country, is_rhs in country_is_right_hand_drive.items():
-    if country in PREFIX.upper():
-        is_right_hand_drive = is_rhs
-        break
-
-
-assert is_right_hand_drive != None, "Drive direction not derived, set 'is_right_hand_drive' manually"
-print("Assuming " + ("right hand drive" if is_right_hand_drive else "left hand drive for:"))
-print(PREFIX)
-    </code>
-        </pre>
-
-
-Create a dataframe from photos.:
-<pre style="background-color: lightgray">
-    <code>
-from datetime import datetime
-from shapely.geometry import Point
-from tqdm import tqdm
-
-import exifread
-import geopandas as gpd
-import pandas as pd
-
-tqdm.pandas()
-
-image_folder = Path(f"/content/{PREFIX}")
-if (not image_folder.exists()):
-    print("STOP: Update image_folder to match the folder of images you downloaded")
-else:
-    gopro_photo_paths = list(image_folder.glob("**/*.JPG")) # May need to switch to .jpg
-    df = pd.DataFrame({"paths": gopro_photo_paths})
-
-len(df)
-    </code>
-</pre>
-
-
-Extract dates and coordinates.:
-<pre style="background-color: lightgray">
-    <code>
-
-    </code>
-</pre>
-
- Move coordinate to field:
-<pre style="background-color: lightgray">
-    <code>
-
-    </code>
-</pre>
-
-  Classify as crop or not crop.:
-<pre style="background-color: lightgray">
-    <code>
-         
-    </code>
-</pre>
-
-  Segment crops in crop photos:
-<pre style="background-color: lightgray">
-    <code>
-         
-    </code>
-</pre>
-
-Filter out low confidence predictions:
-<pre style="background-color: lightgray">
-    <code>
-         
-    </code>
-</pre>
-
-  Get Admin Zones for each point:
-<pre style="background-color: lightgray">
-    <code>
-         
-    </code>
-</pre>
-      
-    Create KMZ file:
-<pre style="background-color: lightgray">
-    <code>
-         
-    </code>
-</pre>
+     Converting GoPro photos to crop type points. Specifically the notebook:
+        <ul>
+            <li>Downloads GoPro photos from Google Cloud or Google Drive</li>
+            <li>Create a dataframe from photos</li>
+            <li>Extract dates and coordinates.</li>
+            <li>Move coordinate to field</li>
+            <li>Classify as crop or not crop.</li>
+            <li>Segment crops in crop photos.</li>
+            <li>Filter out low confidence predictions.</li>
+            <li>Get Admin Zones for each point and KMZ files</li>
+        </ul>
 
 
         <h1 id="resources">Resources</h1>
