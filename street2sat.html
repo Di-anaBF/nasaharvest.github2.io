@@ -87,32 +87,17 @@
         <a href="https://colab.research.google.com/github/nasaharvest/street2sat/blob/main/notebooks/GoPro2CropKMZ.ipynb">Google Collab Notebook containing all relevant scripts</a>
         <br/><br/>
 
-        <h2>Presentation</h2>
+        <h2>Pipeline</h2>
 
-        <h3>1. Introduction</h3>
+        <h3>1. GoPros are used for collecting road side images in agricultural zones (Helmets Data Collection Guide)</h3>
+        <h3>2. Collected photos are uploaded to Cloud Storage (Instructions for Uploading)</h3>
+        <h3>3. Photos are processed using our ML models and turned into a Google Earth Pro KMZ file (notebooks/1_GoPro2CropKMZ.ipynb)</h3>
+        <h3>4. KMZ file(s) are analyzed to verify model predictions (Helmets Quality Assessment Instructions)</h3>
+        <h3>5. Reviewed KMZ files are converted into a csv file (notebooks/2_CropKMZtoCSV.ipynb)</h3>
+        <h3>6. CSV files are combined into a single Kenya dataset (notebooks/3_Kenya_dataset_publish.ipynb)</h3>
         <ul>
-            <li>Crop Type Mapping Hard</li>
-            <li>Helmet Labeling Crop</li>
-            <li>How it work</li>
-            <li>Results so far</li>
-            <li>Next Steps</li>
-            <li>Tutorials</li>
-        </ul>
-        
-        
-        <h2>Breakdown of Script</h2>
-     Converting GoPro photos to crop type points. Specifically the notebook:
-        <ul>
-            <li>Downloads GoPro photos from Google Cloud or Google Drive</li>
-            <li>Create a dataframe from photos</li>
-            <li>Extract dates and coordinates.</li>
-            <li>Move coordinate to field</li>
-            <li>Classify as crop or not crop.</li>
-            <li>Segment crops in crop photos.</li>
-            <li>Filter out low confidence predictions.</li>
-            <li>Get Admin Zones for each point and KMZ files</li>
-        </ul>
 
+    
 
         <h1 id="resources">Resources</h1>
         <ul>
