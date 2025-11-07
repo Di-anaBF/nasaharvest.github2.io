@@ -1,0 +1,1978 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Crop Yield Forecast Estimates – August</title>
+
+<style>
+/* ---------- Reset / Base ---------- */
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height:1.6; color:#333; background:#f5f5f5; }
+a { color:#2c5530; text-decoration:none; }
+
+/* ---------- Layout Shell ---------- */
+.container { max-width:1200px; margin:0 auto; background:#fff; box-shadow:0 0 20px rgba(0,0,0,0.08); }
+.header { background:linear-gradient(135deg, #2c5530, #4a7c4e); color:#fff; padding:2rem; text-align:center; }
+.header h1 { font-size:2.5rem; font-weight:300; margin-bottom:.25rem; }
+.header .subtitle { font-size:1.1rem; opacity:.9; margin-bottom:.75rem; }
+.header .organizations { font-size:.9rem; opacity:.85; }
+
+/* Banner ribbon (logos strip) */
+.banner { background:#2f5f39; color:#fff; padding:14px 10px 8px; text-align:center; }
+.banner .line1 { font-size:.95rem; opacity:.95; }
+.banner .line2 { font-size:.95rem; opacity:.9; margin-top:2px; }
+.banner .logos { display:flex; gap:16px; justify-content:center; align-items:center; padding:10px 8px 8px; }
+.banner .logos img { height:36px; width:auto; object-fit:contain; filter: drop-shadow(0 1px 1px rgba(0,0,0,.15)); }
+
+/* ---------- Nav ---------- */
+.nav { background:#1a4a1e; padding:.75rem 0; position:sticky; top:0; z-index:100; }
+.nav ul { list-style:none; display:flex; justify-content:center; flex-wrap:wrap; }
+.nav li { margin:0 .75rem; }
+.nav a { color:#fff; padding:.45rem .75rem; border-radius:4px; }
+.nav a:hover, .nav a.active { background:rgba(255,255,255,0.18); }
+
+/* ---------- Sections ---------- */
+.content { padding:2rem; }
+.section { margin-bottom:3rem; }
+.section h2 { color:#2c5530; font-size:2rem; margin-bottom:1rem; border-bottom:3px solid #4a7c4e; padding-bottom:.5rem; }
+.section h3 { color:#1a4a1e; font-size:1.5rem; margin:1.5rem 0 1rem; }
+.section h4 { color:#2c5530; font-size:1.1rem; margin:1rem 0 .5rem; }
+
+/* ---------- Cards / Highlights ---------- */
+.executive-summary { background:#f8f9fa; padding:1.5rem; border-left:5px solid #4a7c4e; margin:1rem 0 2rem; }
+.data-highlight { background:#e8f5e8; padding:1rem; border-radius:8px; margin:1rem 0; }
+
+/* ---------- Country Blocks ---------- */
+.country-section { border:1px solid #ddd; border-radius:8px; margin:2rem 0; overflow:hidden; }
+.country-header { background:linear-gradient(135deg, #4a7c4e, #2c5530); color:#fff; padding:1.25rem 1.5rem; }
+.country-header h3 { margin:0; font-size:1.6rem; }
+.country-content { padding:1.5rem; }
+
+/* ---------- Tables ---------- */
+table { width:100%; border-collapse:collapse; margin:1rem 0; background:#fff; border-radius:8px; overflow:hidden;
+        box-shadow:0 2px 10px rgba(0,0,0,0.06); }
+th { background:linear-gradient(135deg, #4a7c4e, #2c5530); color:#fff; padding:0.85rem; text-align:left; font-weight:600; }
+td { padding:0.75rem 0.9rem; border-bottom:1px solid #eee; }
+tr:nth-child(even) { background:#f8f9fa; }
+tr:hover { background:#e8f5e8; transition:background .25s; }
+
+/* Condition chips */
+.condition-poor { background:#ffebee; color:#c62828; }
+.condition-watch { background:#fff8e1; color:#f57c00; }
+.condition-favorable { background:#e8f5e9; color:#2e7d32; }
+.condition-exceptional { background:#e3f2fd; color:#1565c0; }
+
+/* ---------- Figures ---------- */
+.figure-container { text-align:center; margin:1.75rem 0; }
+.figure-container img { max-width:100%; height:auto; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.08); }
+.figure-caption { font-style:italic; color:#666; margin-top:.75rem; padding:0 1rem; }
+.figure-caption h4 { color:#2c5530; font-size:1.05rem; margin-bottom:.35rem; font-style:normal; }
+.figure-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:1rem; margin:1rem 0 1.5rem; }
+
+/* ---------- Comparison table (Executive Summary) ---------- */
+.exec-table { margin-top:.75rem; }
+.exec-table th, .exec-table td { white-space:nowrap; }
+
+/* ---------- Footer ---------- */
+.disclaimer { background:#f8f9fa; border:1px solid #ddd; border-radius:8px; padding:1.25rem; font-size:.92rem; color:#666; }
+
+/* ---------- D3 Chart UI (updated) ---------- */
+.chart-wrap{
+  margin: 10px auto 26px;
+  display:flex; flex-direction:column; align-items:center; gap:12px;
+  max-width:980px;   /* centers + constrains chart area */
+}
+.button-row { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:6px 0; }
+.pill{
+  border:none; padding:12px 20px; border-radius:999px; cursor:pointer;
+  font-size:16px; font-weight:600; letter-spacing:.2px; color:#1b4332; background:#e8f0f2;
+  box-shadow:0 2px 6px rgba(0,0,0,.08); transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
+}
+.pill:hover{ transform:translateY(-1px); box-shadow:0 4px 10px rgba(0,0,0,.12); }
+.pill.is-active{ background:#c5d6db; /* darker than neutral */
+  color:#0e2f24;
+  outline:2px solid #1b4332; /* stronger ring */
+  box-shadow:inset 0 0 0 2px rgba(27,67,50,.35), 0 4px 10px rgba(0,0,0,.10);
+}
+.pill.crop.is-active{ background:#b9d1d7; color:#083125; }
+.pill.source[data-src="All"]{ background:#e3eaee; color:#22323a; }
+.pill.source.usda{ background:#2c7bb6; color:#fff; }
+.pill.source.fao{  background:#f4a259; color:#fff; }
+.pill.source.umd{  background:#1a9850; color:#fff; }
+
+#d3-prod-chart{ display:block; margin:0 auto; }
+
+.tooltip {
+  position:fixed; pointer-events:none; background:#ffffff; color:#263238; border:1px solid #ddd;
+  border-radius:10px; padding:10px 12px; font-size:12px; box-shadow:0 8px 20px rgba(0,0,0,.12); opacity:0; transition:opacity .12s;
+}
+
+/* Axis look: larger, darker */
+.axis text{ fill:#28352b; font-size:14px; }
+.axis path, .axis line{ stroke:#9ab19d; stroke-width:1; }
+.y-title{ fill:#2c5530; font-weight:700; font-size:14px; }
+
+/* ---- Chips / region selector ---- */
+.control-row{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:center; }
+.region-input{ padding:10px 12px; border:1px solid #c9d5cf; border-radius:10px; min-width:240px; font-size:14px; }
+.chips{ display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-top:6px; }
+.chip{ background:#edf4ee; color:#134e4a; border:1px solid #cfe3d8; padding:6px 10px; border-radius:999px; font-size:13px; display:flex; align-items:center; gap:6px; }
+.chip button{ border:none; background:transparent; cursor:pointer; font-size:14px; color:#0b3d35; line-height:1; }
+.small-note{ font-size:12px; color:#6b7f73; text-align:center; margin-top:2px; }
+
+/* ---------- Regional Table Filters + Sorting ---------- */
+.filter-row { 
+  display:flex; gap:12px; margin:12px 0; flex-wrap:wrap; 
+}
+.filter-row label { font-weight:600; margin-right:6px; }
+.filter-row select { padding:6px 10px; border:1px solid #aaa; border-radius:6px; }
+
+th.sortable { cursor:pointer; position:relative; }
+th.sortable:after {
+  content:"⇅"; position:absolute; right:8px; font-size:.8rem; opacity:.6;
+}
+.filter-actions {
+  margin-left: auto;
+}
+
+.download-btn {
+  background: linear-gradient(135deg, #2c5530, #4a7c4e);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.download-btn:hover {
+  background: linear-gradient(135deg, #35643b, #5a8d59);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+
+</style>
+
+<!-- D3 (once) -->
+<script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <header class="header">
+    <h1>Crop Yield Forecast Estimates</h1>
+    <div class="subtitle">August</div>
+  </header>
+
+  <!-- Partner banner -->
+  <div class="banner">
+    <div class="line1">Partnership for Inclusive Agricultural Transformation in Africa (PIATA)</div>
+    <div class="line2">The Regional Food Balance Sheet</div>
+    <div class="logos">
+      <img src="../data/static/AGRA_Banner.png" alt="Partner Logos" style="width:100%; max-width:900px; height:auto; object-fit:contain;">
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <ul>
+      <li><a href="#overview" class="active">Overview</a></li>
+      <li><a href="#executive-summary">Executive Summary</a></li>
+      
+      <li><a href="#uganda">Uganda</a></li>
+      
+      <li><a href="#kenya">Kenya</a></li>
+      
+      <li><a href="#appendix">Appendix</a></li>
+    </ul>
+  </nav>
+
+  <main class="content">
+
+    <!-- Overview -->
+    <section id="overview" class="section">
+      <h2>Overview</h2>
+      <p>This report summarizes yield, acreage, and total production estimates for <strong>maize, rice, and beans</strong> across focus countries. The data is updated monthly in the RFBS Dashboard via a standard data file. Our model reports on the main growing season for countries with available historical yield data for model training.</p>
+
+      <h3>Data Limitations and Model Caveats</h3>
+      <p>The data used in this report has limitations due to gaps in historical records and variations in data collection methods:</p>
+      <ul style="margin-left:1.25rem;">
+        <li>Historical data accuracy and consistency vary by country</li>
+        <li>Our model reflects these data gaps, as it is trained on available information</li>
+        <li>We view these limitations as opportunities to improve data sharing and scaling methods with our country partners</li>
+      </ul>
+
+      <div class="data-highlight">
+        <p><strong>Current Focus:</strong> Data presented this month focuses on maize, rice and bean systems in <strong>Uganda, Kenya</strong>, which are currently in season.</p>
+      </div>
+    </section>
+
+    <!-- Executive Summary -->
+    <section id="executive-summary" class="section">
+      <h2>Executive Summary</h2>
+
+      <div class="executive-summary">
+        <p>Current projections for August 2025 maize, beans and rice production in East Africa show varying forecasts between USDA, FAO and UMD models, as summarized in Table and Figure below. For maize in Kenya, USDA and FAO estimates suggest stable production levels around 4.28 - 4.4 million metric tons (MMT), while UMD projects a broader range of 2.26 - 3.8 MMT, reflecting lower yield assumptions and expanded area coverage. Uganda displays more pronounced differences: USDA estimates maize production at 5.0 MMT with 2.3 million ha, FAO forecasts a reduced total of 2.8 MMT on 1.1 million ha, whereas UMD reports a much lower range between 0.42 - 0.57 MMT over 0.32 million ha, likely due to differing geographic scope. For rice, Kenya's USDA and FAO figures indicate production near 4.05 - 4.1 MMT at minimal area, whereas UMD shows a substantially smaller output (0.76 - 1.19 MMT) but with higher area estimates, suggesting variation in reported cropping intensity and yield. Uganda's rice estimates range from USDA's 5.05 MMT over 0.23 million ha to FAO's 2.75 MMT and UMD's 0.95 - 1.87 MMT, signaling disparities driven by data source or temporal coverage. Overall, these contrasting projections highlight the challenges in harmonizing data for East Africa's varied agroecological zones and underline the importance of integrating multiple data streams for comprehensive regional production assessments.</p>
+      </div>
+
+      <!-- All Sources Interactive Chart -->
+      <h3>All Sources Interactive Chart</h3>
+      <div class="chart-wrap">
+        <div id="crop-buttons" class="button-row"></div>
+        <div id="source-buttons" class="button-row" style="margin-top:4px;"></div>
+        <svg id="d3-prod-chart" width="980" height="480"></svg>
+      </div>
+      <div id="d3-tooltip" class="tooltip"></div>
+
+      <script>
+        // Combined UMD + non-UMD rows injected by Python
+        const rows = [{"Country": "Kenya", "Crop": "Maize", "Source": "USDA", "Area": 2.3, "Yield": 1.91, "MinProd": 4.4, "MaxProd": 4.4}, {"Country": "Kenya", "Crop": "Maize", "Source": "FAO", "Area": 2.4, "Yield": 1.76, "MinProd": 4.28, "MaxProd": 4.28}, {"Country": "Kenya", "Crop": "Rice", "Source": "USDA", "Area": 0.06, "Yield": 5.18, "MinProd": 4.1, "MaxProd": 4.1}, {"Country": "Kenya", "Crop": "Rice", "Source": "FAO", "Area": 0.038, "Yield": 5.8, "MinProd": 4.05, "MaxProd": 4.05}, {"Country": "Uganda", "Crop": "Maize", "Source": "USDA", "Area": 2.3, "Yield": 2.17, "MinProd": 5.0, "MaxProd": 5.0}, {"Country": "Uganda", "Crop": "Maize", "Source": "FAO", "Area": 1.1, "Yield": 2.5, "MinProd": 2.8, "MaxProd": 2.8}, {"Country": "Uganda", "Crop": "Rice", "Source": "USDA", "Area": 0.23, "Yield": 1.59, "MinProd": 5.05, "MaxProd": 5.05}, {"Country": "Uganda", "Crop": "Rice", "Source": "FAO", "Area": 0.2, "Yield": 1.3, "MinProd": 2.75, "MaxProd": 2.75}, {"Country": "Kenya", "Crop": "Maize", "Source": "UMD", "Area": 2.55, "Yield": 1.6, "MinProd": 2.26, "MaxProd": 3.8}, {"Country": "Kenya", "Crop": "Rice", "Source": "UMD", "Area": 0.45, "Yield": 2.22, "MinProd": 0.76, "MaxProd": 1.19}, {"Country": "Uganda", "Crop": "Maize", "Source": "UMD", "Area": 0.32, "Yield": 1.59, "MinProd": 0.42, "MaxProd": 0.57}, {"Country": "Uganda", "Crop": "Rice", "Source": "UMD", "Area": 1.03, "Yield": 1.36, "MinProd": 0.95, "MaxProd": 1.87}];
+
+        // Colors per source
+        const sourceColors = { USDA:"#2c7bb6", FAO:"#f4a259", UMD:"#1a9850" };
+
+        // State
+        const crops   = Array.from(new Set(rows.map(d => d.Crop)));
+        const sources = ["All", ...Array.from(new Set(rows.map(d => d.Source)))];
+        let activeCrop   = crops[0] || "Maize";
+        let activeSource = "All";
+
+        // Crop buttons (neutral)
+        const cropBtnSel = d3.select("#crop-buttons")
+          .selectAll("button")
+          .data(crops)
+          .join("button")
+            .attr("class","pill crop")
+            .classed("is-active", d => d === activeCrop)
+            .text(d => d)
+            .on("click", (_, d) => { activeCrop=d; cropBtnSel.classed("is-active", x=>x===activeCrop); update(); });
+
+        // Source buttons (colored)
+        const srcBtnSel = d3.select("#source-buttons")
+          .selectAll("button")
+          .data(sources)
+          .join("button")
+            .attr("class", d => "pill source " + (d==="All" ? "" : d.toLowerCase()))
+            .attr("data-src", d => d)
+            .style("background", d => d==="All" ? "#e3eaee" : (sourceColors[d]||"#888"))
+            .style("color", d => d==="All" ? "#22323a" : "#fff")
+            .classed("is-active", d => d === activeSource)
+            .text(d => d)
+            .on("click", (_, d) => { activeSource=d; srcBtnSel.classed("is-active", x=>x===activeSource); update(); });
+
+        // Chart scaffold
+        const svg = d3.select("#d3-prod-chart");
+        const margin = {top: 16, right: 24, bottom: 64, left: 80};
+        const W = +svg.attr("width")  - margin.left - margin.right;
+        const H = +svg.attr("height") - margin.top  - margin.bottom;
+        const g  = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+        const gx = g.append("g").attr("class","axis").attr("transform", `translate(0,${H})`);
+        const gy = g.append("g").attr("class","axis");
+        g.append("text").attr("class","y-title")
+          .attr("x",-H/2).attr("y",-56).attr("transform","rotate(-90)")
+          .attr("text-anchor","middle")
+          .text("Production (Million MT)");
+
+        const x = d3.scaleBand().padding(0.36).range([0, W]); // wider cat spacing
+        const y = d3.scaleLinear().range([H, 0]);
+
+        const barLayer = g.append("g");
+        const errLayer = g.append("g");
+        const capLayer = g.append("g");
+        const tooltip  = d3.select("#d3-tooltip");
+
+        function update(){
+          let data = rows.filter(r => r.Crop === activeCrop);
+          if (activeSource !== "All") data = data.filter(r => r.Source === activeSource);
+
+          // Aggregate per Country+Source
+          const grouped = d3.rollups(
+            data,
+            v => ({
+              Country: v[0].Country,
+              Source : v[0].Source,
+              Crop   : v[0].Crop,
+              mean   : d3.mean(v, d => (d.MinProd + d.MaxProd)/2),
+              min    : d3.mean(v, d => d.MinProd),
+              max    : d3.mean(v, d => d.MaxProd),
+              area   : d3.sum(v, d => d.Area),
+              yld    : d3.mean(v, d => d.Yield)
+            }),
+            d => d.Country, d => d.Source
+          );
+
+          const flat = [];
+          grouped.forEach(([country, arr]) => arr.forEach(([src,val]) => flat.push(val)));
+
+          const countries = Array.from(new Set(flat.map(d => d.Country)));
+          x.domain(countries);
+          y.domain([0, Math.max(1, d3.max(flat, d => d.max) * 1.15 || 0.5)]).nice();
+
+          // Geometry
+          const srcsInView = (activeSource === "All")
+            ? Array.from(new Set(flat.map(d => d.Source)))
+            : [activeSource];
+
+          const bw = x.bandwidth();
+          const xSub = d3.scaleBand().domain(srcsInView).range([0, bw]).paddingInner(0.04).paddingOuter(0.22);
+          const SINGLE_WIDTH = Math.min(36, Math.max(18, bw * 0.38));
+
+          function barX(d){
+            const bx = x(d.Country) ?? 0;
+            if (activeSource === "All") return bx + xSub(d.Source);
+            return bx + (bw - SINGLE_WIDTH)/2;
+          }
+          function barW(){ return activeSource === "All" ? xSub.bandwidth() : SINGLE_WIDTH; }
+
+          // Bars
+          const key = d => `${d.Country}__${d.Source}`;
+          const bars = barLayer.selectAll("rect.bar").data(flat, key);
+
+          bars.exit().transition().duration(250).attr("y", y(0)).attr("height", 0).remove();
+
+          bars.enter().append("rect")
+              .attr("class","bar")
+              .attr("rx",3).attr("ry",3)
+              .attr("x", d => barX(d))
+              .attr("y", y(0)).attr("height", 0).attr("width", barW())
+              .attr("fill", d => sourceColors[d.Source] || "#888")
+              .attr("opacity", activeSource==="All" ? 0.9 : 0.95)
+            .merge(bars)
+              .transition().duration(450)
+              .attr("x", d => barX(d))
+              .attr("width", barW())
+              .attr("y", d => y(d.mean))
+              .attr("height", d => Math.max(0, y(0) - y(d.mean)));
+
+          // Error bars — UMD only, vertical with caps, not touching axis
+          const umdOnly = flat.filter(d => d.Source === "UMD" && (d.max - d.min) > 1e-6);
+
+          const errs = errLayer.selectAll("line.err").data(umdOnly, key);
+          errs.exit().remove();
+          errs.enter().append("line")
+              .attr("class","err")
+              .attr("stroke","#2c5530").attr("stroke-width",1.6)
+            .merge(errs)
+              .transition().duration(450)
+              .attr("x1", d => barX(d) + barW()/2)
+              .attr("x2", d => barX(d) + barW()/2)
+              .attr("y1", d => y(d.max))
+              .attr("y2", d => y(d.min));
+
+          const capW = d => Math.max(8, barW() * 0.45);
+          const capsTop = capLayer.selectAll("line.capTop").data(umdOnly, key);
+          capsTop.exit().remove();
+          capsTop.enter().append("line")
+              .attr("class","capTop")
+              .attr("stroke","#2c5530").attr("stroke-width",1.6)
+            .merge(capsTop)
+              .transition().duration(450)
+              .attr("x1", d => barX(d) + (barW() - capW())/2)
+              .attr("x2", d => barX(d) + (barW() + capW())/2)
+              .attr("y1", d => y(d.max))
+              .attr("y2", d => y(d.max));
+
+          const capsBot = capLayer.selectAll("line.capBot").data(umdOnly, key);
+          capsBot.exit().remove();
+          capsBot.enter().append("line")
+              .attr("class","capBot")
+              .attr("stroke","#2c5530").attr("stroke-width",1.6)
+            .merge(capsBot)
+              .transition().duration(450)
+              .attr("x1", d => barX(d) + (barW() - capW())/2)
+              .attr("x2", d => barX(d) + (barW() + capW())/2)
+              .attr("y1", d => y(d.min))
+              .attr("y2", d => y(d.min));
+
+          // Tooltip (only show min–max for UMD)
+          barLayer.selectAll("rect.bar")
+            .on("pointerenter", function (event, d) {
+              d3.select(this).attr("opacity", 1);
+              tooltip.style("opacity",1).html(`
+                <div style="font-weight:700;margin-bottom:4px;">${d.Country}</div>
+                <div>Crop: <b>${d.Crop}</b></div>
+                <div>Source: <b>${d.Source}</b></div>
+                <div>Mean prod: <b>${d.mean.toFixed(2)}</b> M MT</div>
+                ${d.Source==='UMD' ? `<div>Min–Max: <b>${d.min.toFixed(2)} – ${d.max.toFixed(2)}</b> M MT</div>` : ``}
+                <div>Area: <b>${d.area.toFixed(2)}</b> M ha</div>
+                <div>Yield: <b>${d.yld.toFixed(2)}</b> MT/ha</div>
+              `);
+            })
+            .on("pointermove", function (event) {
+              const [px, py] = d3.pointer(event, document.body);
+              tooltip.style("left", (px+14)+"px").style("top", (py-10)+"px");
+            })
+            .on("pointerleave", function(){
+              d3.select(this).attr("opacity", activeSource==="All" ? 0.9 : 0.95);
+              tooltip.style("opacity",0);
+            });
+
+          // Axes (styled via CSS .axis rules)
+          gx.transition().duration(350).call(d3.axisBottom(x));
+          gy.transition().duration(350).call(d3.axisLeft(y).ticks(6));
+        }
+
+        update();
+      </script>
+
+      <!-- Comparison table (rows pre-rendered by Python) -->
+      <h3>All Sources Comparison Table</h3>
+      <table class="exec-table">
+        <thead>
+          <tr>
+            <th>Country</th><th>Crop</th><th>Source</th>
+            <th>Area (Million ha)</th><th>Yield (MT/ha)</th><th>Min - Max Production (Million MT)</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+          <tr>
+            
+              <td rowspan="6"><strong>Kenya</strong></td>
+            
+            
+              <td rowspan="3"><strong>Maize</strong></td>
+            
+            <td style="color:#2c7bb6;">
+              USDA
+            </td>
+            <td>2.3</td>
+            <td>1.91</td>
+            <td>4.4</td>
+          </tr>
+          
+          <tr>
+            
+            
+            <td style="color:#f4a259;">
+              FAO
+            </td>
+            <td>2.4</td>
+            <td>1.76</td>
+            <td>4.28</td>
+          </tr>
+          
+          <tr>
+            
+            
+            <td style="color:#1a9850;">
+              UMD
+            </td>
+            <td>2.55</td>
+            <td>1.6</td>
+            <td>2.26 - 3.8</td>
+          </tr>
+          
+          <tr>
+            
+            
+              <td rowspan="3"><strong>Rice</strong></td>
+            
+            <td style="color:#2c7bb6;">
+              USDA
+            </td>
+            <td>0.06</td>
+            <td>5.18</td>
+            <td>4.1</td>
+          </tr>
+          
+          <tr>
+            
+            
+            <td style="color:#f4a259;">
+              FAO
+            </td>
+            <td>0.04</td>
+            <td>5.8</td>
+            <td>4.05</td>
+          </tr>
+          
+          <tr>
+            
+            
+            <td style="color:#1a9850;">
+              UMD
+            </td>
+            <td>0.45</td>
+            <td>2.22</td>
+            <td>0.76 - 1.19</td>
+          </tr>
+          
+          <tr>
+            
+              <td rowspan="6"><strong>Uganda</strong></td>
+            
+            
+              <td rowspan="3"><strong>Maize</strong></td>
+            
+            <td style="color:#2c7bb6;">
+              USDA
+            </td>
+            <td>2.3</td>
+            <td>2.17</td>
+            <td>5.0</td>
+          </tr>
+          
+          <tr>
+            
+            
+            <td style="color:#f4a259;">
+              FAO
+            </td>
+            <td>1.1</td>
+            <td>2.5</td>
+            <td>2.8</td>
+          </tr>
+          
+          <tr>
+            
+            
+            <td style="color:#1a9850;">
+              UMD
+            </td>
+            <td>0.32</td>
+            <td>1.59</td>
+            <td>0.42 - 0.57</td>
+          </tr>
+          
+          <tr>
+            
+            
+              <td rowspan="3"><strong>Rice</strong></td>
+            
+            <td style="color:#2c7bb6;">
+              USDA
+            </td>
+            <td>0.23</td>
+            <td>1.59</td>
+            <td>5.05</td>
+          </tr>
+          
+          <tr>
+            
+            
+            <td style="color:#f4a259;">
+              FAO
+            </td>
+            <td>0.2</td>
+            <td>1.3</td>
+            <td>2.75</td>
+          </tr>
+          
+          <tr>
+            
+            
+            <td style="color:#1a9850;">
+              UMD
+            </td>
+            <td>1.03</td>
+            <td>1.36</td>
+            <td>0.95 - 1.87</td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Country Chapters built by Python (kept as-is) -->
+    <section class="section" id="country-summary">
+  <section class="section" id="country-summary">
+<h2>Regional Overview/Conditions</h2>
+<h3>Country Summary</h3>
+<ul class="data-highlight" style="list-style:disc;padding-left:22px;">
+<li><strong>Uganda:</strong> Maize conditions are generally stable with favorable trends in Eastern, Western, and Central regions, showing positive yield anomalies ranging from +0.01 to +0.09 MgT/ha, whereas the Northern region reports a slight negative anomaly (-0.14) indicating some stress. Rice also shows stable conditions across regions with minor anomalies; Eastern and Western regions have small positive anomalies (+0.04 and +0.06), while Central and Northern regions see slightly negative or minimal anomalies (-0.06 and +0.02 respectively). No alarming extremes are noted, and all crops exhibit stable trending conditions.</li>
+<li><strong>Kenya:</strong> Maize conditions display a broad regional contrast with pronounced challenges in several arid and semi-arid counties such as Wajir, Marsabit, Makueni, Kitui, and Mandera, where predicted yield anomalies range from -0.89 to -0.82, indicating poor performance and declining trends. Conversely, top maize-producing counties including Uasin Gishu, Elgeyo-Marakwet, Nakuru, and Bomet report stable trends with positive yield anomalies up to +1.01. Rice conditions, primarily in coastal and some central regions, are mostly stable but show slight negative anomalies, for example, Lamu and Garissa with anomalies around -0.22 and -0.16 respectively, signaling watch status though largely stable. No alarming extremes in rice yields are noted this month.</li>
+</ul></section>
+<div class="country-section" id="uganda">
+  <div class="country-header">
+    <h3>Uganda</h3>
+  </div>
+  <div class="country-content">
+    <div class="figure-container">
+      <img src="../data/calendars/Uganda.png" alt="Uganda Agricultural Calendar">
+      <div class="figure-caption">
+        <h4>Figure: Agricultural Calendar – Uganda</h4>
+        <p>Uganda is currently in the latter phase of its first bimodal agricultural season, which started in March and runs through July-August. Harvesting activities for maize and rice are ongoing in August, while preparations for the second rainy season are expected to commence shortly after September.</p>
+      </div>
+    </div>
+    <h4>Regional Crop Conditions Summary</h4>
+    <p>Maize conditions are generally stable with favorable trends in Eastern, Western, and Central regions, showing positive yield anomalies ranging from +0.01 to +0.09 MgT/ha, whereas the Northern region reports a slight negative anomaly (-0.14) indicating some stress. Rice also shows stable conditions across regions with minor anomalies; Eastern and Western regions have small positive anomalies (+0.04 and +0.06), while Central and Northern regions see slightly negative or minimal anomalies (-0.06 and +0.02 respectively). No alarming extremes are noted, and all crops exhibit stable trending conditions.</p>
+<button class="pill" onclick="location.href='#regional-table-uganda'">
+  View Regional Production Forecast Table
+</button>
+    <div class="figure-container">
+      <img src="uganda_production_part1.png" alt="Uganda mean production with min/max">
+      <div class="figure-caption">
+        <h4>Figure: Mean Predicted Production with Min/Max – Uganda (Part 1)</h4>
+        <p>Bar chart showing mean predicted production for maize, beans, and rice with min/max ranges.</p>
+      </div>
+    </div>
+    <div class="figure-grid">
+      <div class="figure-container">
+        <img src="../data/maps/Uganda_Maize_August_Yield.png" alt="Uganda Maize August Yield Map">
+        <div class="figure-caption">
+          <h4>Regional Maize Yield Forecasts</h4>
+          <p>In August 2025, the Central region of Uganda displays the highest predicted maize yield at 1.68 MgT ha⁻¹, while the Northern region shows the lowest yield at 1.44 MgT ha⁻¹, marking a clear gradient from above-average yields in the south to below-average yields in the north.</p>
+        </div></div>
+      <div class="figure-container">
+        <img src="../data/maps/Uganda_Maize_August_Yield_Anomaly.png" alt="Uganda Maize August Yield Anomaly Map">
+        <div class="figure-caption">
+          <h4>Regional Maize Yield Anomaly</h4>
+          <p>In August 2025, Uganda's Central region shows the highest positive maize yield anomaly at +0.09 MgT/ha, while the Northern region experiences the lowest with a significant negative anomaly of -0.14 MgT/ha, indicating contrasting productivity extremes.</p>
+        </div></div>
+    </div>
+    <div class="figure-grid">
+      <div class="figure-container">
+        <img src="../data/maps/Uganda_Rice_August_Yield.png" alt="Uganda Rice August Yield Map">
+        <div class="figure-caption">
+          <h4>Regional Rice Yield Forecasts</h4>
+          <p>In August 2025, Uganda's Western region is the top-performing area for rice yield with 1.42 MgT/ha, while the Central region is the lowest at 1.30 MgT/ha. The yield ranges moderately across regions, with Northern and Western regions showing notably higher yields above 1.38 MgT/ha.</p>
+        </div></div>
+      <div class="figure-container">
+        <img src="../data/maps/Uganda_Rice_August_Yield_Anomaly.png" alt="Uganda Rice August Yield Anomaly Map">
+        <div class="figure-caption">
+          <h4>Regional Rice Yield Anomaly</h4>
+          <p>In August 2025, Uganda's Western region shows the highest positive rice yield anomaly at +0.06 MgT/ha, while the Central region exhibits the largest negative anomaly at -0.06 MgT/ha, indicating contrasting extremes in rice production. Northern and Eastern regions display near-neutral anomalies of +0.02 and -0.02 MgT/ha, respectively.</p>
+        </div></div>
+    </div>
+    <h4>Production Narrative</h4>
+    <p>For maize, total production area ranges from approximately 51,973 ha in Eastern to 112,417 ha in Northern Uganda. Predicted production is highest in the Northern region with 141,100 to 183,384 tons, followed by Central with 119,620 to 151,886 tons, and Western with 94,556 to 142,195 tons. Rice production is largest in the Northern region (331,787 to 679,045 tons), followed by Central (225,487 to 457,318 tons) and Western (233,947 to 437,915 tons). Maize stands out as the top crop by yield efficiency in Central and Western regions, while rice leads in terms of maximum production volume, particularly in the Northern region. All crops maintain stable trends though moderate uncertainties remain due to yield standard errors, especially in rice where variability is higher.</p>
+  </div></div>
+<div class="country-section" id="kenya">
+  <div class="country-header">
+    <h3>Kenya</h3>
+  </div>
+  <div class="country-content">
+    <div class="figure-container">
+      <img src="../data/calendars/Kenya.png" alt="Kenya Agricultural Calendar">
+      <div class="figure-caption">
+        <h4>Figure: Agricultural Calendar – Kenya</h4>
+        <p>August marks the beginning of the harvest season for the long rains (March-July) across Kenya, especially for maize and rice crops. While the Eastern and Northern regions are concluding their bimodal long rains season with harvest through September, the Rift Valley and Western regions continue with their unimodal pattern. Attention is now shifting to post-harvest assessments as the short rains planting will begin later in the year.</p>
+      </div>
+    </div>
+    <h4>Regional Crop Conditions Summary</h4>
+    <p>Maize conditions display a broad regional contrast with pronounced challenges in several arid and semi-arid counties such as Wajir, Marsabit, Makueni, Kitui, and Mandera, where predicted yield anomalies range from -0.89 to -0.82, indicating poor performance and declining trends. Conversely, top maize-producing counties including Uasin Gishu, Elgeyo-Marakwet, Nakuru, and Bomet report stable trends with positive yield anomalies up to +1.01. Rice conditions, primarily in coastal and some central regions, are mostly stable but show slight negative anomalies, for example, Lamu and Garissa with anomalies around -0.22 and -0.16 respectively, signaling watch status though largely stable. No alarming extremes in rice yields are noted this month.</p>
+<button class="pill" onclick="location.href='#regional-table-kenya'">
+  View Regional Production Forecast Table
+</button>
+    <div class="figure-container">
+      <img src="kenya_production_part1.png" alt="Kenya mean production with min/max">
+      <div class="figure-caption">
+        <h4>Figure: Mean Predicted Production with Min/Max – Kenya (Part 1)</h4>
+        <p>Bar chart showing mean predicted production for maize, beans, and rice with min/max ranges.</p>
+      </div>
+    </div>
+    <div class="figure-container">
+      <img src="kenya_production_part2.png" alt="Kenya mean production with min/max">
+      <div class="figure-caption">
+        <h4>Figure: Mean Predicted Production with Min/Max – Kenya (Part 2)</h4>
+        <p>Bar chart showing mean predicted production for maize, beans, and rice with min/max ranges.</p>
+      </div>
+    </div>
+    <div class="figure-container">
+      <img src="kenya_production_part3.png" alt="Kenya mean production with min/max">
+      <div class="figure-caption">
+        <h4>Figure: Mean Predicted Production with Min/Max – Kenya (Part 3)</h4>
+        <p>Bar chart showing mean predicted production for maize, beans, and rice with min/max ranges.</p>
+      </div>
+    </div>
+    <div class="figure-container">
+      <img src="kenya_production_part4.png" alt="Kenya mean production with min/max">
+      <div class="figure-caption">
+        <h4>Figure: Mean Predicted Production with Min/Max – Kenya (Part 4)</h4>
+        <p>Bar chart showing mean predicted production for maize, beans, and rice with min/max ranges.</p>
+      </div>
+    </div>
+    <div class="figure-container">
+      <img src="kenya_production_part5.png" alt="Kenya mean production with min/max">
+      <div class="figure-caption">
+        <h4>Figure: Mean Predicted Production with Min/Max – Kenya (Part 5)</h4>
+        <p>Bar chart showing mean predicted production for maize, beans, and rice with min/max ranges.</p>
+      </div>
+    </div>
+    <div class="figure-container">
+      <img src="kenya_production_part6.png" alt="Kenya mean production with min/max">
+      <div class="figure-caption">
+        <h4>Figure: Mean Predicted Production with Min/Max – Kenya (Part 6)</h4>
+        <p>Bar chart showing mean predicted production for maize, beans, and rice with min/max ranges.</p>
+      </div>
+    </div>
+    <div class="figure-container">
+      <img src="kenya_production_part7.png" alt="Kenya mean production with min/max">
+      <div class="figure-caption">
+        <h4>Figure: Mean Predicted Production with Min/Max – Kenya (Part 7)</h4>
+        <p>Bar chart showing mean predicted production for maize, beans, and rice with min/max ranges.</p>
+      </div>
+    </div>
+    <div class="figure-grid">
+      <div class="figure-container">
+        <img src="../data/maps/Kenya_Maize_August_Yield.png" alt="Kenya Maize August Yield Map">
+        <div class="figure-caption">
+          <h4>Regional Maize Yield Forecasts</h4>
+          <p>In August 2025, Bomet shows the highest maize yield prediction at 2.41 MgT/ha, while Kitui and Makueni exhibit the lowest yields around 0.75 MgT/ha, indicating a significant yield gradient across Kenya. The western regions largely show above-average yields, contrasting with below-average yields in parts of the eastern and southeastern regions.</p>
+        </div></div>
+      <div class="figure-container">
+        <img src="../data/maps/Kenya_Maize_August_Yield_Anomaly.png" alt="Kenya Maize August Yield Anomaly Map">
+        <div class="figure-caption">
+          <h4>Regional Maize Yield Anomaly</h4>
+          <p>In August 2025, Jasin Gishu recorded the highest positive maize yield anomaly at +1.01 MgT/ha, while Kitui had the lowest with a negative anomaly of -0.85 MgT/ha. The map shows significant regional variation with strong positive anomalies in western Kenya and pronounced negative anomalies in eastern and southeastern regions.</p>
+        </div></div>
+    </div>
+    <div class="figure-grid">
+      <div class="figure-container">
+        <img src="../data/maps/Kenya_Rice_August_Yield.png" alt="Kenya Rice August Yield Map">
+        <div class="figure-caption">
+          <h4>Regional Rice Yield Forecasts</h4>
+          <p>In August 2025, Kenya's rice yield prediction shows Taita Taveta as the top-performing region with a yield of 2.33 MgT/ha, while Lamu is the lowest at 1.99 MgT/ha. Overall yields range from 1.99 to 2.37 MgT/ha, with higher yields concentrated in the western and central regions.</p>
+        </div></div>
+      <div class="figure-container">
+        <img src="../data/maps/Kenya_Rice_August_Yield_Anomaly.png" alt="Kenya Rice August Yield Anomaly Map">
+        <div class="figure-caption">
+          <h4>Regional Rice Yield Anomaly</h4>
+          <p>In August 2025, Murang'a leads with the highest positive rice yield anomaly of +0.19 MgT/ha, while Lamu experiences the largest negative anomaly at -0.28 MgT/ha. Overall, central regions show above-average yields, contrasting with significant below-average yields in coastal and northeastern areas.</p>
+        </div></div>
+    </div>
+    <h4>Production Narrative</h4>
+    <p>Maize remains Kenya's top-producing crop by volume with total harvested areas ranging widely from over 1,000 ha in counties like Mombasa to above 330,000 ha in regions such as Marsabit. High production volumes are seen in Turkana (estimated min production exceeding 330,000 tons), Wajir (minimum production over 100,000 tons), and Marsabit with production estimated between 151,234 and 333,170 tons. Production uncertainties arise especially in counties with large variability in predicted production ranges like Turkana and Marsabit, reflecting environmental and seasonal risks. Rice production area is significantly smaller, with top counties Lamu and Garissa producing estimated minimum productions of 21,105 and 157,978 tons respectively and stable trends observed. Overall, maize leads in both area and production with some counties showing strong recovery potential, while rice production remains stable but with moderate yield deficits observed.</p>
+  </div></div>
+
+     
+</section>
+    <!-- === New: Per-country interactive regional charts (injected into each country section) === -->
+    <script>
+      // Data from Python: { "Kenya": [...], "Uganda":[...], ... }
+      // Each row suggested fields: Country, Region, Crop, Area, PredictedYield, MinProd, MaxProd
+      // Where MinProd/MaxProd are in tons. If only mean is available, set both equal.
+      const regionDataByCountry = {"Uganda": [{"Region": "Northern", "Crop": "Maize", "MeanProd": 161880.47999999998, "MinProd": 141100.0, "MaxProd": 183384.0, "Area": 112417.0, "Yield": 1.44, "Trend": "Stable"}, {"Region": "Eastern", "Crop": "Maize", "MeanProd": 83156.8, "MinProd": 69679.0, "MaxProd": 96262.0, "Area": 51973.0, "Yield": 1.6, "Trend": "Stable"}, {"Region": "Western", "Crop": "Maize", "MeanProd": 118616.73, "MinProd": 94556.0, "MaxProd": 142195.0, "Area": 72771.0, "Yield": 1.63, "Trend": "Stable"}, {"Region": "Central", "Crop": "Maize", "MeanProd": 135806.16, "MinProd": 119620.0, "MaxProd": 151886.0, "Area": 80837.0, "Yield": 1.68, "Trend": "Stable"}, {"Region": "Central", "Crop": "Rice", "MeanProd": 341701.10000000003, "MinProd": 225487.0, "MaxProd": 457318.0, "Area": 262847.0, "Yield": 1.3, "Trend": "Stable"}, {"Region": "Eastern", "Crop": "Rice", "MeanProd": 226454.64, "MinProd": 160599.0, "MaxProd": 292078.0, "Area": 168996.0, "Yield": 1.34, "Trend": "Stable"}, {"Region": "Northern", "Crop": "Rice", "MeanProd": 504436.92, "MinProd": 331787.0, "MaxProd": 679045.0, "Area": 365534.0, "Yield": 1.38, "Trend": "Stable"}, {"Region": "Western", "Crop": "Rice", "MeanProd": 336001.82, "MinProd": 233947.0, "MaxProd": 437915.0, "Area": 236621.0, "Yield": 1.42, "Trend": "Stable"}], "Kenya": [{"Region": "Wajir", "Crop": "Maize", "MeanProd": 176804.19999999998, "MinProd": 103597.0, "MaxProd": 247837.0, "Area": 249020.0, "Yield": 0.71, "Trend": "Declining"}, {"Region": "Marsabit", "Crop": "Maize", "MeanProd": 243730.21, "MinProd": 151234.0, "MaxProd": 333170.0, "Area": 333877.0, "Yield": 0.73, "Trend": "Declining"}, {"Region": "Makueni", "Crop": "Maize", "MeanProd": 26891.25, "MinProd": 17312.0, "MaxProd": 36318.0, "Area": 35855.0, "Yield": 0.75, "Trend": "Declining"}, {"Region": "Kitui", "Crop": "Maize", "MeanProd": 100182.75, "MinProd": 65502.0, "MaxProd": 134832.0, "Area": 133577.0, "Yield": 0.75, "Trend": "Declining"}, {"Region": "Mandera", "Crop": "Maize", "MeanProd": 89093.94, "MinProd": 52754.0, "MaxProd": 124703.0, "Area": 114223.0, "Yield": 0.78, "Trend": "Declining"}, {"Region": "Isiolo", "Crop": "Maize", "MeanProd": 98020.56, "MinProd": 68386.0, "MaxProd": 126674.0, "Area": 111387.0, "Yield": 0.88, "Trend": "Declining"}, {"Region": "Machakos", "Crop": "Maize", "MeanProd": 23346.4, "MinProd": 15948.0, "MaxProd": 30666.0, "Area": 26530.0, "Yield": 0.88, "Trend": "Declining"}, {"Region": "Garissa", "Crop": "Maize", "MeanProd": 170314.85, "MinProd": 114827.0, "MaxProd": 225069.0, "Area": 191365.0, "Yield": 0.89, "Trend": "Stable"}, {"Region": "Kwale", "Crop": "Maize", "MeanProd": 33055.75, "MinProd": 24142.0, "MaxProd": 42113.0, "Area": 36325.0, "Yield": 0.91, "Trend": "Declining"}, {"Region": "Taita Taveta", "Crop": "Maize", "MeanProd": 68468.40000000001, "MinProd": 48395.0, "MaxProd": 88848.0, "Area": 75240.0, "Yield": 0.91, "Trend": "Declining"}, {"Region": "Kilifi", "Crop": "Maize", "MeanProd": 53044.799999999996, "MinProd": 39161.0, "MaxProd": 67238.0, "Area": 55255.0, "Yield": 0.96, "Trend": "Stable"}, {"Region": "Tana River", "Crop": "Maize", "MeanProd": 173606.88, "MinProd": 123118.0, "MaxProd": 225247.0, "Area": 171888.0, "Yield": 1.01, "Trend": "Declining"}, {"Region": "Lamu", "Crop": "Maize", "MeanProd": 28202.36, "MinProd": 22230.0, "MaxProd": 33942.0, "Area": 26606.0, "Yield": 1.06, "Trend": "Stable"}, {"Region": "Tharaka-Nithi", "Crop": "Maize", "MeanProd": 12686.240000000002, "MinProd": 9850.0, "MaxProd": 15423.0, "Area": 11327.0, "Yield": 1.12, "Trend": "Stable"}, {"Region": "Mombasa", "Crop": "Maize", "MeanProd": 1149.1200000000001, "MinProd": 864.0, "MaxProd": 1435.0, "Area": 1026.0, "Yield": 1.12, "Trend": "Stable"}, {"Region": "Kajiado", "Crop": "Maize", "MeanProd": 111436.56, "MinProd": 77477.0, "MaxProd": 145220.0, "Area": 96066.0, "Yield": 1.16, "Trend": "Declining"}, {"Region": "Embu", "Crop": "Maize", "MeanProd": 14597.779999999999, "MinProd": 11570.0, "MaxProd": 17596.0, "Area": 12371.0, "Yield": 1.18, "Trend": "Stable"}, {"Region": "Meru", "Crop": "Maize", "MeanProd": 43248.93, "MinProd": 33985.0, "MaxProd": 52718.0, "Area": 30673.0, "Yield": 1.41, "Trend": "Declining"}, {"Region": "Siaya", "Crop": "Maize", "MeanProd": 22809.76, "MinProd": 18499.0, "MaxProd": 27071.0, "Area": 15412.0, "Yield": 1.48, "Trend": "Stable"}, {"Region": "Busia", "Crop": "Maize", "MeanProd": 11566.87, "MinProd": 9741.0, "MaxProd": 13435.0, "Area": 7763.0, "Yield": 1.49, "Trend": "Stable"}, {"Region": "Kisumu", "Crop": "Maize", "MeanProd": 17767.28, "MinProd": 13704.0, "MaxProd": 21738.0, "Area": 11689.0, "Yield": 1.52, "Trend": "Stable"}, {"Region": "Turkana", "Crop": "Maize", "MeanProd": 405174.60000000003, "MinProd": 332996.0, "MaxProd": 479020.0, "Area": 264820.0, "Yield": 1.53, "Trend": "Stable"}, {"Region": "Homa Bay", "Crop": "Maize", "MeanProd": 31940.850000000002, "MinProd": 24222.0, "MaxProd": 39593.0, "Area": 20607.0, "Yield": 1.55, "Trend": "Declining"}, {"Region": "Samburu", "Crop": "Maize", "MeanProd": 145649.14, "MinProd": 107623.0, "MaxProd": 182976.0, "Area": 92183.0, "Yield": 1.58, "Trend": "Stable"}, {"Region": "Kirinyaga", "Crop": "Maize", "MeanProd": 10285.710000000001, "MinProd": 7793.0, "MaxProd": 12812.0, "Area": 6469.0, "Yield": 1.59, "Trend": "Stable"}, {"Region": "Nyeri", "Crop": "Maize", "MeanProd": 23697.36, "MinProd": 19286.0, "MaxProd": 28088.0, "Area": 14628.0, "Yield": 1.62, "Trend": "Stable"}, {"Region": "Vihiga", "Crop": "Maize", "MeanProd": 4055.7, "MinProd": 3228.0, "MaxProd": 4904.0, "Area": 2458.0, "Yield": 1.65, "Trend": "Stable"}, {"Region": "Murang'A", "Crop": "Maize", "MeanProd": 18604.32, "MinProd": 14448.0, "MaxProd": 22733.0, "Area": 11074.0, "Yield": 1.68, "Trend": "Stable"}, {"Region": "Migori", "Crop": "Maize", "MeanProd": 23249.52, "MinProd": 16553.0, "MaxProd": 29920.0, "Area": 13839.0, "Yield": 1.68, "Trend": "Stable"}, {"Region": "Kakamega", "Crop": "Maize", "MeanProd": 23752.8, "MinProd": 19387.0, "MaxProd": 28077.0, "Area": 13196.0, "Yield": 1.8, "Trend": "Stable"}, {"Region": "Nairobi", "Crop": "Maize", "MeanProd": 5634.72, "MinProd": 4710.0, "MaxProd": 6549.0, "Area": 3096.0, "Yield": 1.82, "Trend": "Stable"}, {"Region": "Laikipia", "Crop": "Maize", "MeanProd": 76537.92, "MinProd": 64570.0, "MaxProd": 88798.0, "Area": 41824.0, "Yield": 1.83, "Trend": "Declining"}, {"Region": "Bungoma", "Crop": "Maize", "MeanProd": 25355.52, "MinProd": 20739.0, "MaxProd": 30038.0, "Area": 13206.0, "Yield": 1.92, "Trend": "Stable"}, {"Region": "Kiambu", "Crop": "Maize", "MeanProd": 21423.36, "MinProd": 17352.0, "MaxProd": 25560.0, "Area": 11158.0, "Yield": 1.92, "Trend": "Stable"}, {"Region": "West Pokot", "Crop": "Maize", "MeanProd": 89752.52, "MinProd": 73420.0, "MaxProd": 106131.0, "Area": 40612.0, "Yield": 2.21, "Trend": "Stable"}, {"Region": "Baringo", "Crop": "Maize", "MeanProd": 106016.1, "MinProd": 89357.0, "MaxProd": 122357.0, "Area": 47755.0, "Yield": 2.22, "Trend": "Stable"}, {"Region": "Nyandarua", "Crop": "Maize", "MeanProd": 32945.2, "MinProd": 29090.0, "MaxProd": 36807.0, "Area": 14324.0, "Yield": 2.3, "Trend": "Stable"}, {"Region": "Nandi", "Crop": "Maize", "MeanProd": 28729.47, "MinProd": 24008.0, "MaxProd": 33517.0, "Area": 12437.0, "Yield": 2.31, "Trend": "Stable"}, {"Region": "Nyamira", "Crop": "Maize", "MeanProd": 9205.56, "MinProd": 7483.0, "MaxProd": 10909.0, "Area": 3934.0, "Yield": 2.34, "Trend": "Stable"}, {"Region": "Narok", "Crop": "Maize", "MeanProd": 183832.74, "MinProd": 149568.0, "MaxProd": 218656.0, "Area": 78561.0, "Yield": 2.34, "Trend": "Stable"}, {"Region": "Kericho", "Crop": "Maize", "MeanProd": 26241.879999999997, "MinProd": 22277.0, "MaxProd": 30315.0, "Area": 11026.0, "Yield": 2.38, "Trend": "Stable"}, {"Region": "Bomet", "Crop": "Maize", "MeanProd": 25772.54, "MinProd": 21312.0, "MaxProd": 30315.0, "Area": 10694.0, "Yield": 2.41, "Trend": "Stable"}, {"Region": "Nakuru", "Crop": "Maize", "MeanProd": 79460.7, "MinProd": 65699.0, "MaxProd": 93107.0, "Area": 32835.0, "Yield": 2.42, "Trend": "Stable"}, {"Region": "Kisii", "Crop": "Maize", "MeanProd": 14179.44, "MinProd": 11881.0, "MaxProd": 16502.0, "Area": 5764.0, "Yield": 2.46, "Trend": "Stable"}, {"Region": "Trans Nzoia", "Crop": "Maize", "MeanProd": 27639.449999999997, "MinProd": 23982.0, "MaxProd": 31368.0, "Area": 10839.0, "Yield": 2.55, "Trend": "Stable"}, {"Region": "Elgeyo-Marakwet", "Crop": "Maize", "MeanProd": 34190.59, "MinProd": 28954.0, "MaxProd": 39443.0, "Area": 13201.0, "Yield": 2.59, "Trend": "Stable"}, {"Region": "Uasin Gishu", "Crop": "Maize", "MeanProd": 38870.729999999996, "MinProd": 34086.0, "MaxProd": 43525.0, "Area": 14893.0, "Yield": 2.61, "Trend": "Stable"}, {"Region": "Lamu", "Crop": "Rice", "MeanProd": 27682.89, "MinProd": 21105.0, "MaxProd": 34377.0, "Area": 13911.0, "Yield": 1.99, "Trend": "Stable"}, {"Region": "Tharaka-Nithi", "Crop": "Rice", "MeanProd": 12042.12, "MinProd": 9264.0, "MaxProd": 14837.0, "Area": 5903.0, "Yield": 2.04, "Trend": "Stable"}, {"Region": "Garissa", "Crop": "Rice", "MeanProd": 203458.4, "MinProd": 157978.0, "MaxProd": 249485.0, "Area": 99248.0, "Yield": 2.05, "Trend": "Stable"}, {"Region": "Kilifi", "Crop": "Rice", "MeanProd": 57605.840000000004, "MinProd": 44706.0, "MaxProd": 70322.0, "Area": 27964.0, "Yield": 2.06, "Trend": "Stable"}, {"Region": "Kakamega", "Crop": "Rice", "MeanProd": 13988.369999999999, "MinProd": 10695.0, "MaxProd": 17321.0, "Area": 6693.0, "Yield": 2.09, "Trend": "Stable"}, {"Region": "Kwale", "Crop": "Rice", "MeanProd": 38699.509999999995, "MinProd": 29024.0, "MaxProd": 48502.0, "Area": 18341.0, "Yield": 2.11, "Trend": "Stable"}, {"Region": "Bungoma", "Crop": "Rice", "MeanProd": 14254.880000000001, "MinProd": 11126.0, "MaxProd": 17447.0, "Area": 6724.0, "Yield": 2.12, "Trend": "Stable"}, {"Region": "Vihiga", "Crop": "Rice", "MeanProd": 2507.0099999999998, "MinProd": 1945.0, "MaxProd": 3061.0, "Area": 1177.0, "Yield": 2.13, "Trend": "Stable"}, {"Region": "Tana River", "Crop": "Rice", "MeanProd": 184120.56, "MinProd": 143433.0, "MaxProd": 224583.0, "Area": 85241.0, "Yield": 2.16, "Trend": "Stable"}, {"Region": "Nakuru", "Crop": "Rice", "MeanProd": 35901.36, "MinProd": 27794.0, "MaxProd": 44117.0, "Area": 16621.0, "Yield": 2.16, "Trend": "Stable"}, {"Region": "Siaya", "Crop": "Rice", "MeanProd": 12456.420000000002, "MinProd": 9562.0, "MaxProd": 15387.0, "Area": 5611.0, "Yield": 2.22, "Trend": "Stable"}, {"Region": "Elgeyo-Marakwet", "Crop": "Rice", "MeanProd": 14983.369999999999, "MinProd": 11833.0, "MaxProd": 18176.0, "Area": 6719.0, "Yield": 2.23, "Trend": "Stable"}, {"Region": "Embu", "Crop": "Rice", "MeanProd": 13935.27, "MinProd": 10819.0, "MaxProd": 17006.0, "Area": 6249.0, "Yield": 2.23, "Trend": "Stable"}, {"Region": "Busia", "Crop": "Rice", "MeanProd": 8415.68, "MinProd": 6450.0, "MaxProd": 10403.0, "Area": 3757.0, "Yield": 2.24, "Trend": "Stable"}, {"Region": "Kisumu", "Crop": "Rice", "MeanProd": 10406.25, "MinProd": 8204.0, "MaxProd": 12589.0, "Area": 4625.0, "Yield": 2.25, "Trend": "Stable"}, {"Region": "Baringo", "Crop": "Rice", "MeanProd": 54769.5, "MinProd": 43327.0, "MaxProd": 66453.0, "Area": 24342.0, "Yield": 2.25, "Trend": "Stable"}, {"Region": "Migori", "Crop": "Rice", "MeanProd": 13070.66, "MinProd": 10313.0, "MaxProd": 15772.0, "Area": 5758.0, "Yield": 2.27, "Trend": "Stable"}, {"Region": "Nyandarua", "Crop": "Rice", "MeanProd": 16334.92, "MinProd": 12613.0, "MaxProd": 20097.0, "Area": 7196.0, "Yield": 2.27, "Trend": "Stable"}, {"Region": "Homa Bay", "Crop": "Rice", "MeanProd": 16020.84, "MinProd": 12666.0, "MaxProd": 19312.0, "Area": 6996.0, "Yield": 2.29, "Trend": "Stable"}, {"Region": "Kiambu", "Crop": "Rice", "MeanProd": 12915.6, "MinProd": 10240.0, "MaxProd": 15643.0, "Area": 5640.0, "Yield": 2.29, "Trend": "Stable"}, {"Region": "West Pokot", "Crop": "Rice", "MeanProd": 46768.2, "MinProd": 37225.0, "MaxProd": 56177.0, "Area": 20334.0, "Yield": 2.3, "Trend": "Stable"}, {"Region": "Taita Taveta", "Crop": "Rice", "MeanProd": 88274.38, "MinProd": 68305.0, "MaxProd": 108390.0, "Area": 37886.0, "Yield": 2.33, "Trend": "Stable"}, {"Region": "Meru", "Crop": "Rice", "MeanProd": 36806.1, "MinProd": 29460.0, "MaxProd": 44090.0, "Area": 15530.0, "Yield": 2.37, "Trend": "Stable"}, {"Region": "Nyeri", "Crop": "Rice", "MeanProd": 17538.0, "MinProd": 13832.0, "MaxProd": 21262.0, "Area": 7400.0, "Yield": 2.37, "Trend": "Stable"}, {"Region": "Kirinyaga", "Crop": "Rice", "MeanProd": 7806.4, "MinProd": 6191.0, "MaxProd": 9452.0, "Area": 3280.0, "Yield": 2.38, "Trend": "Stable"}, {"Region": "Murang'A", "Crop": "Rice", "MeanProd": 13617.6, "MinProd": 10786.0, "MaxProd": 16495.0, "Area": 5674.0, "Yield": 2.4, "Trend": "Stable"}]};
+
+      // Utility: slugify for ids / anchors
+      const slug = s => String(s || "").toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9\-]/g,'');
+
+      // Hide static PNG production charts inside country sections (true "replace")
+      function hideStaticProductionPNGs(sectionEl){
+        if (!sectionEl) return;
+        const imgs = sectionEl.querySelectorAll('img');
+        imgs.forEach(img => {
+          const src = (img.getAttribute('src') || '').toLowerCase();
+          if (/_production_part\d*\.png$/.test(src) || src.includes('production_part')) {
+            const fig = img.closest('.figure-container') || img;
+            fig.style.display = 'none';
+          }
+        });
+      }
+
+      // Create and inject a full interactive chart block into a given country section
+      function injectRegionChart(country, rows){
+        const sec = document.querySelector('.country-section#' + slug(country));
+        // fallback: try by heading text if id missing
+        let contentHost = sec ? sec.querySelector('.country-content') : null;
+
+        if (!contentHost) {
+          // fallback: append to summary section end
+          contentHost = document.getElementById('country-summary');
+        }
+
+        // Build wrapper
+        const wrap = document.createElement('div');
+        wrap.className = 'chart-wrap';
+        wrap.id = `region-wrap-${slug(country)}`;
+        wrap.innerHTML = `
+          <h3 style="margin-top:6px;">${country} — Regional Interactive Chart</h3>
+          <div class="control-row" style="margin-top:2px;">
+            <div id="crop-buttons-${slug(country)}" class="button-row"></div>
+          </div>
+          <div class="control-row">
+            <input id="region-input-${slug(country)}" class="region-input" list="region-list-${slug(country)}" placeholder="Type a region/county and click Add">
+            <datalist id="region-list-${slug(country)}"></datalist>
+            <button class="pill" id="btn-add-${slug(country)}">Add</button>
+            <button class="pill" id="btn-top3-${slug(country)}">Top 3</button>
+            <button class="pill" id="btn-top5-${slug(country)}">Top 5</button>
+            <button class="pill" id="btn-clear-${slug(country)}">Clear</button>
+          </div>
+          <div class="chips" id="chips-${slug(country)}"></div>
+          <div class="small-note">Bars show mean predicted production; vertical whiskers (UMD) show min–max range.</div>
+          <svg id="svg-${slug(country)}" width="980" height="420"></svg>
+        `;
+        contentHost.appendChild(wrap);
+
+        // Optionally hide old PNGs
+        hideStaticProductionPNGs(sec || contentHost);
+
+        // ---- D3 setup for this country ----
+        const svg = d3.select(`#svg-${slug(country)}`);
+        const margin = {top: 18, right: 22, bottom: 66, left: 92};
+        const W = +svg.attr("width")  - margin.left - margin.right;
+        const H = +svg.attr("height") - margin.top  - margin.bottom;
+        const g  = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+        const gx = g.append("g").attr("class","axis").attr("transform", `translate(0,${H})`);
+        const gy = g.append("g").attr("class","axis");
+        g.append("text").attr("class","y-title")
+          .attr("x",-H/2).attr("y",-70).attr("transform","rotate(-90)")
+          .attr("text-anchor","middle").text("Predicted Production (tons)");
+
+        const x = d3.scaleBand().padding(0.36).range([0, W]);
+        const y = d3.scaleLinear().range([H, 0]);
+
+        const barLayer = g.append("g");
+        const errLayer = g.append("g");
+        const capLayer = g.append("g");
+
+        // Data prep
+        const allCrops = Array.from(new Set(rows.map(r => String(r.Crop).trim()))).sort();
+        let activeCrop = allCrops[0] || "Maize";
+        const regionsAll = Array.from(new Set(rows.filter(r => r.Crop===activeCrop).map(r => String(r.Region)))).sort();
+        let selectedRegions = [];
+
+        // Build crop buttons
+        const cropBtns = d3.select(`#crop-buttons-${slug(country)}`)
+          .selectAll("button")
+          .data(allCrops)
+          .join("button")
+          .attr("class","pill crop")
+          .classed("is-active", d => d===activeCrop)
+          .text(d => d)
+          .on("click", (_, d) => {
+            activeCrop = d;
+            // refresh datalist
+            refreshDatalist();
+            // reset default selection to Top 5 for new crop
+            pickTopN(5);
+            cropBtns.classed("is-active", x => x===activeCrop);
+            update();
+          });
+
+        // Build datalist options
+        const datalist = document.getElementById(`region-list-${slug(country)}`);
+        function refreshDatalist(){
+          datalist.innerHTML = "";
+          const regs = Array.from(new Set(rows.filter(r => r.Crop===activeCrop).map(r => String(r.Region)))).sort();
+          regs.forEach(r => {
+            const opt = document.createElement('option');
+            opt.value = r;
+            datalist.appendChild(opt);
+          });
+        }
+        refreshDatalist();
+
+        // Helpers to compute mean/min/max per region for active crop
+        function regionStatsForCrop(crop){
+          const subset = rows.filter(r => r.Crop === crop);
+          const byRegion = d3.rollups(
+            subset,
+            v => {
+              // calc mean, min, max production (tons)
+              const mins = v.map(d => +d.MinProd).filter(n => Number.isFinite(n));
+              const maxs = v.map(d => +d.MaxProd).filter(n => Number.isFinite(n));
+              let min = d3.sum(mins);
+              let max = d3.sum(maxs);
+              if (!Number.isFinite(min) || !Number.isFinite(max)) {
+                // fallback to area*yield if min/max missing
+                const means = v.map(d => (+d.Area || 0) * (+d.PredictedYield || 0));
+                min = max = d3.sum(means);
+              }
+              const mean = (min + max) / 2;
+              return { region: v[0].Region, crop, mean, min, max };
+            },
+            d => d.Region
+          ).map(([region, obj]) => obj);
+          // Sort descending mean
+          byRegion.sort((a,b) => d3.descending(a.mean, b.mean));
+          return byRegion;
+        }
+
+        function pickTopN(n){
+          const stats = regionStatsForCrop(activeCrop);
+          selectedRegions = stats.slice(0, n).map(d => d.region);
+          renderChips();
+        }
+
+        // Chips UI
+        const chipsHost = document.getElementById(`chips-${slug(country)}`);
+        function renderChips(){
+          chipsHost.innerHTML = "";
+          selectedRegions.forEach(reg => {
+            const el = document.createElement('span');
+            el.className = 'chip';
+            el.innerHTML = `${reg} <button aria-label="Remove ${reg}">&times;</button>`;
+            el.querySelector('button').addEventListener('click', () => {
+              selectedRegions = selectedRegions.filter(x => x !== reg);
+              renderChips();
+              update();
+            });
+            chipsHost.appendChild(el);
+          });
+        }
+
+        // Buttons
+        document.getElementById(`btn-add-${slug(country)}`).addEventListener('click', () => {
+          const txt = document.getElementById(`region-input-${slug(country)}`).value.trim();
+          const validRegions = new Set(rows.filter(r => r.Crop===activeCrop).map(r => String(r.Region)));
+          if (txt && validRegions.has(txt) && !selectedRegions.includes(txt)){
+            selectedRegions.push(txt);
+            renderChips();
+            update();
+          }
+          document.getElementById(`region-input-${slug(country)}`).value = "";
+        });
+        document.getElementById(`btn-top3-${slug(country)}`).addEventListener('click', () => { pickTopN(3); update(); });
+        document.getElementById(`btn-top5-${slug(country)}`).addEventListener('click', () => { pickTopN(5); update(); });
+        document.getElementById(`btn-clear-${slug(country)}`).addEventListener('click', () => { selectedRegions = []; renderChips(); update(); });
+
+        // Default: Top 5 for initial crop
+        pickTopN(5);
+
+        function update(){
+          const stats = regionStatsForCrop(activeCrop);
+          const regionSet = new Set(selectedRegions.length ? selectedRegions : stats.slice(0,5).map(d=>d.region));
+          const data = stats.filter(d => regionSet.has(d.region));
+
+          // domains
+          const regions = data.map(d => d.region);
+          x.domain(regions);
+          const ymax = d3.max(data, d => d.max) || 1;
+          y.domain([0, ymax * 1.15]).nice();
+
+          // bars
+          const bars = barLayer.selectAll("rect.bar").data(data, d => d.region);
+          bars.exit().transition().duration(250).attr("y", y(0)).attr("height", 0).remove();
+
+          const bw = x.bandwidth();
+          const BARW = Math.min(36, Math.max(18, bw * 0.38));
+
+          const cropColors = {
+            "Maize": "#1a9850",   // green
+            "Rice":  "#f4a259",   // orange
+            "Beans": "#5e3c99"    // purple (or any color you like)
+          };
+
+          bars.enter().append("rect")
+              .attr("class","bar")
+              .attr("rx",3).attr("ry",3)
+              .attr("x", d => (x(d.region) ?? 0) + (bw - BARW)/2)
+              .attr("y", y(0)).attr("height", 0).attr("width", BARW)
+              .attr("fill", d => cropColors[d.crop] || "#888")
+              .attr("opacity", 0.95)
+            .merge(bars)
+              .transition().duration(450)
+              .attr("x", d => (x(d.region) ?? 0) + (bw - BARW)/2)
+              .attr("width", BARW)
+              .attr("y", d => y(d.mean))
+              .attr("height", d => Math.max(0, y(0) - y(d.mean)))
+              .attr("fill", d => cropColors[d.crop] || "#888");
+
+          // error whiskers with caps (UMD)
+          const errs = errLayer.selectAll("line.err").data(data, d => d.region);
+          errs.exit().remove();
+          errs.enter().append("line")
+              .attr("class","err")
+              .attr("stroke","#2c5530").attr("stroke-width",1.6)
+            .merge(errs)
+              .transition().duration(450)
+              .attr("x1", d => (x(d.region) ?? 0) + (bw)/2)
+              .attr("x2", d => (x(d.region) ?? 0) + (bw)/2)
+              .attr("y1", d => y(d.max))
+              .attr("y2", d => y(d.min));
+
+          const capW = Math.max(8, BARW * 0.4);
+          const capsTop = capLayer.selectAll("line.capTop").data(data, d => d.region);
+          capsTop.exit().remove();
+          capsTop.enter().append("line")
+              .attr("class","capTop")
+              .attr("stroke","#2c5530").attr("stroke-width",1.6)
+            .merge(capsTop)
+              .transition().duration(450)
+              .attr("x1", d => (x(d.region) ?? 0) + (bw - capW)/2)
+              .attr("x2", d => (x(d.region) ?? 0) + (bw + capW)/2)
+              .attr("y1", d => y(d.max))
+              .attr("y2", d => y(d.max));
+
+          const capsBot = capLayer.selectAll("line.capBot").data(data, d => d.region);
+          capsBot.exit().remove();
+          capsBot.enter().append("line")
+              .attr("class","capBot")
+              .attr("stroke","#2c5530").attr("stroke-width",1.6)
+            .merge(capsBot)
+              .transition().duration(450)
+              .attr("x1", d => (x(d.region) ?? 0) + (bw - capW)/2)
+              .attr("x2", d => (x(d.region) ?? 0) + (bw + capW)/2)
+              .attr("y1", d => y(d.min))
+              .attr("y2", d => y(d.min));
+
+          // axes
+          gx.transition().duration(350).call(d3.axisBottom(x));
+          gy.transition().duration(350).call(d3.axisLeft(y).ticks(6));
+        }
+
+        update();
+      }
+
+      // Initialize charts for all countries present in data
+      document.addEventListener('DOMContentLoaded', () => {
+        if (!regionDataByCountry) return;
+        Object.keys(regionDataByCountry).forEach(country => {
+          try {
+            injectRegionChart(country, regionDataByCountry[country] || []);
+          } catch (e) {
+            console.warn('Failed to inject chart for', country, e);
+          }
+        });
+      });
+    </script>
+    <!-- === End: per-country interactive charts === -->
+    <section id="appendix-tables" class="section">
+  <h2>Regional Production Forecast Tables</h2>
+
+  
+    <h3 id="regional-table-uganda">Uganda – Regional Production Table</h3>
+
+    <div class="filter-row">
+      <div>
+        <label for="crop-filter-uganda">Crop:</label>
+        <select id="crop-filter-uganda">
+          <option value="All">All</option>
+          <option value="Maize">Maize</option>
+          <option value="Rice">Rice</option>
+          <option value="Beans">Beans</option>
+        </select>
+      </div>
+      <div>
+        <label for="cond-filter-uganda">Condition:</label>
+        <select id="cond-filter-uganda">
+          <option value="All">All</option>
+          <option value="Exceptional">Exceptional</option>
+          <option value="Favorable">Favorable</option>
+          <option value="Watch">Watch</option>
+          <option value="Poor">Poor</option>
+        </select>
+      </div>
+      <button class="download-btn" data-table="regional-table-uganda" type="button">
+        Download CSV
+      </button>
+    </div>
+
+    <table class="regional-table" id="regional-table-uganda">
+      <thead>
+        <tr>
+          <th>Crop</th>
+          <th>Region</th>
+          <th class="sortable">Predicted Yield (MT/ha)</th>
+          <th class="sortable">Yield Anomaly</th>
+          <th>Min–Max Production (tons)</th>
+          <th>Condition</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr data-crop="Maize" data-condition="Poor">
+          <td><strong>Maize</strong></td>
+          <td>Northern</td>
+          <td>1.44</td>
+          <td>-0.14</td>
+          <td>141100.0 – 183384.0</td>
+          <td class="condition-poor">Poor</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Favorable">
+          <td><strong>Maize</strong></td>
+          <td>Eastern</td>
+          <td>1.6</td>
+          <td>0.01</td>
+          <td>69679.0 – 96262.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Favorable">
+          <td><strong>Maize</strong></td>
+          <td>Western</td>
+          <td>1.63</td>
+          <td>0.04</td>
+          <td>94556.0 – 142195.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Favorable">
+          <td><strong>Maize</strong></td>
+          <td>Central</td>
+          <td>1.68</td>
+          <td>0.09</td>
+          <td>119620.0 – 151886.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Watch">
+          <td><strong>Rice</strong></td>
+          <td>Central</td>
+          <td>1.3</td>
+          <td>-0.06</td>
+          <td>225487.0 – 457318.0</td>
+          <td class="condition-watch">Watch</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Watch">
+          <td><strong>Rice</strong></td>
+          <td>Eastern</td>
+          <td>1.34</td>
+          <td>-0.02</td>
+          <td>160599.0 – 292078.0</td>
+          <td class="condition-watch">Watch</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Favorable">
+          <td><strong>Rice</strong></td>
+          <td>Northern</td>
+          <td>1.38</td>
+          <td>0.02</td>
+          <td>331787.0 – 679045.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Favorable">
+          <td><strong>Rice</strong></td>
+          <td>Western</td>
+          <td>1.42</td>
+          <td>0.06</td>
+          <td>233947.0 – 437915.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  
+    <h3 id="regional-table-kenya">Kenya – Regional Production Table</h3>
+
+    <div class="filter-row">
+      <div>
+        <label for="crop-filter-kenya">Crop:</label>
+        <select id="crop-filter-kenya">
+          <option value="All">All</option>
+          <option value="Maize">Maize</option>
+          <option value="Rice">Rice</option>
+          <option value="Beans">Beans</option>
+        </select>
+      </div>
+      <div>
+        <label for="cond-filter-kenya">Condition:</label>
+        <select id="cond-filter-kenya">
+          <option value="All">All</option>
+          <option value="Exceptional">Exceptional</option>
+          <option value="Favorable">Favorable</option>
+          <option value="Watch">Watch</option>
+          <option value="Poor">Poor</option>
+        </select>
+      </div>
+      <button class="download-btn" data-table="regional-table-kenya" type="button">
+        Download CSV
+      </button>
+    </div>
+
+    <table class="regional-table" id="regional-table-kenya">
+      <thead>
+        <tr>
+          <th>Crop</th>
+          <th>Region</th>
+          <th class="sortable">Predicted Yield (MT/ha)</th>
+          <th class="sortable">Yield Anomaly</th>
+          <th>Min–Max Production (tons)</th>
+          <th>Condition</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        <tr data-crop="Maize" data-condition="Poor">
+          <td><strong>Maize</strong></td>
+          <td>Wajir</td>
+          <td>0.71</td>
+          <td>-0.89</td>
+          <td>103597.0 – 247837.0</td>
+          <td class="condition-poor">Poor</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Poor">
+          <td><strong>Maize</strong></td>
+          <td>Marsabit</td>
+          <td>0.73</td>
+          <td>-0.87</td>
+          <td>151234.0 – 333170.0</td>
+          <td class="condition-poor">Poor</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Poor">
+          <td><strong>Maize</strong></td>
+          <td>Makueni</td>
+          <td>0.75</td>
+          <td>-0.85</td>
+          <td>17312.0 – 36318.0</td>
+          <td class="condition-poor">Poor</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Poor">
+          <td><strong>Maize</strong></td>
+          <td>Kitui</td>
+          <td>0.75</td>
+          <td>-0.85</td>
+          <td>65502.0 – 134832.0</td>
+          <td class="condition-poor">Poor</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Poor">
+          <td><strong>Maize</strong></td>
+          <td>Mandera</td>
+          <td>0.78</td>
+          <td>-0.82</td>
+          <td>52754.0 – 124703.0</td>
+          <td class="condition-poor">Poor</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Poor">
+          <td><strong>Maize</strong></td>
+          <td>Isiolo</td>
+          <td>0.88</td>
+          <td>-0.72</td>
+          <td>68386.0 – 126674.0</td>
+          <td class="condition-poor">Poor</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Poor">
+          <td><strong>Maize</strong></td>
+          <td>Machakos</td>
+          <td>0.88</td>
+          <td>-0.72</td>
+          <td>15948.0 – 30666.0</td>
+          <td class="condition-poor">Poor</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Poor">
+          <td><strong>Maize</strong></td>
+          <td>Garissa</td>
+          <td>0.89</td>
+          <td>-0.71</td>
+          <td>114827.0 – 225069.0</td>
+          <td class="condition-poor">Poor</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Poor">
+          <td><strong>Maize</strong></td>
+          <td>Kwale</td>
+          <td>0.91</td>
+          <td>-0.68</td>
+          <td>24142.0 – 42113.0</td>
+          <td class="condition-poor">Poor</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Poor">
+          <td><strong>Maize</strong></td>
+          <td>Taita Taveta</td>
+          <td>0.91</td>
+          <td>-0.68</td>
+          <td>48395.0 – 88848.0</td>
+          <td class="condition-poor">Poor</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Poor">
+          <td><strong>Maize</strong></td>
+          <td>Kilifi</td>
+          <td>0.96</td>
+          <td>-0.63</td>
+          <td>39161.0 – 67238.0</td>
+          <td class="condition-poor">Poor</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Poor">
+          <td><strong>Maize</strong></td>
+          <td>Tana River</td>
+          <td>1.01</td>
+          <td>-0.58</td>
+          <td>123118.0 – 225247.0</td>
+          <td class="condition-poor">Poor</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Poor">
+          <td><strong>Maize</strong></td>
+          <td>Lamu</td>
+          <td>1.06</td>
+          <td>-0.54</td>
+          <td>22230.0 – 33942.0</td>
+          <td class="condition-poor">Poor</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Poor">
+          <td><strong>Maize</strong></td>
+          <td>Tharaka-Nithi</td>
+          <td>1.12</td>
+          <td>-0.48</td>
+          <td>9850.0 – 15423.0</td>
+          <td class="condition-poor">Poor</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Poor">
+          <td><strong>Maize</strong></td>
+          <td>Mombasa</td>
+          <td>1.12</td>
+          <td>-0.48</td>
+          <td>864.0 – 1435.0</td>
+          <td class="condition-poor">Poor</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Poor">
+          <td><strong>Maize</strong></td>
+          <td>Kajiado</td>
+          <td>1.16</td>
+          <td>-0.44</td>
+          <td>77477.0 – 145220.0</td>
+          <td class="condition-poor">Poor</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Poor">
+          <td><strong>Maize</strong></td>
+          <td>Embu</td>
+          <td>1.18</td>
+          <td>-0.42</td>
+          <td>11570.0 – 17596.0</td>
+          <td class="condition-poor">Poor</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Poor">
+          <td><strong>Maize</strong></td>
+          <td>Meru</td>
+          <td>1.41</td>
+          <td>-0.18</td>
+          <td>33985.0 – 52718.0</td>
+          <td class="condition-poor">Poor</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Poor">
+          <td><strong>Maize</strong></td>
+          <td>Siaya</td>
+          <td>1.48</td>
+          <td>-0.12</td>
+          <td>18499.0 – 27071.0</td>
+          <td class="condition-poor">Poor</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Poor">
+          <td><strong>Maize</strong></td>
+          <td>Busia</td>
+          <td>1.49</td>
+          <td>-0.1</td>
+          <td>9741.0 – 13435.0</td>
+          <td class="condition-poor">Poor</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Watch">
+          <td><strong>Maize</strong></td>
+          <td>Kisumu</td>
+          <td>1.52</td>
+          <td>-0.08</td>
+          <td>13704.0 – 21738.0</td>
+          <td class="condition-watch">Watch</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Watch">
+          <td><strong>Maize</strong></td>
+          <td>Turkana</td>
+          <td>1.53</td>
+          <td>-0.06</td>
+          <td>332996.0 – 479020.0</td>
+          <td class="condition-watch">Watch</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Watch">
+          <td><strong>Maize</strong></td>
+          <td>Homa Bay</td>
+          <td>1.55</td>
+          <td>-0.05</td>
+          <td>24222.0 – 39593.0</td>
+          <td class="condition-watch">Watch</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Watch">
+          <td><strong>Maize</strong></td>
+          <td>Samburu</td>
+          <td>1.58</td>
+          <td>-0.02</td>
+          <td>107623.0 – 182976.0</td>
+          <td class="condition-watch">Watch</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Watch">
+          <td><strong>Maize</strong></td>
+          <td>Kirinyaga</td>
+          <td>1.59</td>
+          <td>0.0</td>
+          <td>7793.0 – 12812.0</td>
+          <td class="condition-watch">Watch</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Favorable">
+          <td><strong>Maize</strong></td>
+          <td>Nyeri</td>
+          <td>1.62</td>
+          <td>0.02</td>
+          <td>19286.0 – 28088.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Favorable">
+          <td><strong>Maize</strong></td>
+          <td>Vihiga</td>
+          <td>1.65</td>
+          <td>0.06</td>
+          <td>3228.0 – 4904.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Favorable">
+          <td><strong>Maize</strong></td>
+          <td>Murang'A</td>
+          <td>1.68</td>
+          <td>0.08</td>
+          <td>14448.0 – 22733.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Favorable">
+          <td><strong>Maize</strong></td>
+          <td>Migori</td>
+          <td>1.68</td>
+          <td>0.08</td>
+          <td>16553.0 – 29920.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Favorable">
+          <td><strong>Maize</strong></td>
+          <td>Kakamega</td>
+          <td>1.8</td>
+          <td>0.2</td>
+          <td>19387.0 – 28077.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Favorable">
+          <td><strong>Maize</strong></td>
+          <td>Nairobi</td>
+          <td>1.82</td>
+          <td>0.22</td>
+          <td>4710.0 – 6549.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Favorable">
+          <td><strong>Maize</strong></td>
+          <td>Laikipia</td>
+          <td>1.83</td>
+          <td>0.24</td>
+          <td>64570.0 – 88798.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Favorable">
+          <td><strong>Maize</strong></td>
+          <td>Bungoma</td>
+          <td>1.92</td>
+          <td>0.33</td>
+          <td>20739.0 – 30038.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Favorable">
+          <td><strong>Maize</strong></td>
+          <td>Kiambu</td>
+          <td>1.92</td>
+          <td>0.33</td>
+          <td>17352.0 – 25560.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Favorable">
+          <td><strong>Maize</strong></td>
+          <td>West Pokot</td>
+          <td>2.21</td>
+          <td>0.61</td>
+          <td>73420.0 – 106131.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Favorable">
+          <td><strong>Maize</strong></td>
+          <td>Baringo</td>
+          <td>2.22</td>
+          <td>0.62</td>
+          <td>89357.0 – 122357.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Favorable">
+          <td><strong>Maize</strong></td>
+          <td>Nyandarua</td>
+          <td>2.3</td>
+          <td>0.7</td>
+          <td>29090.0 – 36807.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Favorable">
+          <td><strong>Maize</strong></td>
+          <td>Nandi</td>
+          <td>2.31</td>
+          <td>0.72</td>
+          <td>24008.0 – 33517.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Favorable">
+          <td><strong>Maize</strong></td>
+          <td>Nyamira</td>
+          <td>2.34</td>
+          <td>0.74</td>
+          <td>7483.0 – 10909.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Favorable">
+          <td><strong>Maize</strong></td>
+          <td>Narok</td>
+          <td>2.34</td>
+          <td>0.75</td>
+          <td>149568.0 – 218656.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Favorable">
+          <td><strong>Maize</strong></td>
+          <td>Kericho</td>
+          <td>2.38</td>
+          <td>0.79</td>
+          <td>22277.0 – 30315.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Favorable">
+          <td><strong>Maize</strong></td>
+          <td>Bomet</td>
+          <td>2.41</td>
+          <td>0.82</td>
+          <td>21312.0 – 30315.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Favorable">
+          <td><strong>Maize</strong></td>
+          <td>Nakuru</td>
+          <td>2.42</td>
+          <td>0.82</td>
+          <td>65699.0 – 93107.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Favorable">
+          <td><strong>Maize</strong></td>
+          <td>Kisii</td>
+          <td>2.46</td>
+          <td>0.87</td>
+          <td>11881.0 – 16502.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Favorable">
+          <td><strong>Maize</strong></td>
+          <td>Trans Nzoia</td>
+          <td>2.55</td>
+          <td>0.96</td>
+          <td>23982.0 – 31368.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Favorable">
+          <td><strong>Maize</strong></td>
+          <td>Elgeyo-Marakwet</td>
+          <td>2.59</td>
+          <td>0.99</td>
+          <td>28954.0 – 39443.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Maize" data-condition="Exceptional">
+          <td><strong>Maize</strong></td>
+          <td>Uasin Gishu</td>
+          <td>2.61</td>
+          <td>1.01</td>
+          <td>34086.0 – 43525.0</td>
+          <td class="condition-exceptional">Exceptional</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Poor">
+          <td><strong>Rice</strong></td>
+          <td>Lamu</td>
+          <td>1.99</td>
+          <td>-0.22</td>
+          <td>21105.0 – 34377.0</td>
+          <td class="condition-poor">Poor</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Poor">
+          <td><strong>Rice</strong></td>
+          <td>Tharaka-Nithi</td>
+          <td>2.04</td>
+          <td>-0.18</td>
+          <td>9264.0 – 14837.0</td>
+          <td class="condition-poor">Poor</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Poor">
+          <td><strong>Rice</strong></td>
+          <td>Garissa</td>
+          <td>2.05</td>
+          <td>-0.16</td>
+          <td>157978.0 – 249485.0</td>
+          <td class="condition-poor">Poor</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Poor">
+          <td><strong>Rice</strong></td>
+          <td>Kilifi</td>
+          <td>2.06</td>
+          <td>-0.16</td>
+          <td>44706.0 – 70322.0</td>
+          <td class="condition-poor">Poor</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Poor">
+          <td><strong>Rice</strong></td>
+          <td>Kakamega</td>
+          <td>2.09</td>
+          <td>-0.12</td>
+          <td>10695.0 – 17321.0</td>
+          <td class="condition-poor">Poor</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Poor">
+          <td><strong>Rice</strong></td>
+          <td>Kwale</td>
+          <td>2.11</td>
+          <td>-0.1</td>
+          <td>29024.0 – 48502.0</td>
+          <td class="condition-poor">Poor</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Watch">
+          <td><strong>Rice</strong></td>
+          <td>Bungoma</td>
+          <td>2.12</td>
+          <td>-0.09</td>
+          <td>11126.0 – 17447.0</td>
+          <td class="condition-watch">Watch</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Watch">
+          <td><strong>Rice</strong></td>
+          <td>Vihiga</td>
+          <td>2.13</td>
+          <td>-0.09</td>
+          <td>1945.0 – 3061.0</td>
+          <td class="condition-watch">Watch</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Watch">
+          <td><strong>Rice</strong></td>
+          <td>Tana River</td>
+          <td>2.16</td>
+          <td>-0.06</td>
+          <td>143433.0 – 224583.0</td>
+          <td class="condition-watch">Watch</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Watch">
+          <td><strong>Rice</strong></td>
+          <td>Nakuru</td>
+          <td>2.16</td>
+          <td>-0.05</td>
+          <td>27794.0 – 44117.0</td>
+          <td class="condition-watch">Watch</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Favorable">
+          <td><strong>Rice</strong></td>
+          <td>Siaya</td>
+          <td>2.22</td>
+          <td>0.01</td>
+          <td>9562.0 – 15387.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Favorable">
+          <td><strong>Rice</strong></td>
+          <td>Elgeyo-Marakwet</td>
+          <td>2.23</td>
+          <td>0.02</td>
+          <td>11833.0 – 18176.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Favorable">
+          <td><strong>Rice</strong></td>
+          <td>Embu</td>
+          <td>2.23</td>
+          <td>0.01</td>
+          <td>10819.0 – 17006.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Favorable">
+          <td><strong>Rice</strong></td>
+          <td>Busia</td>
+          <td>2.24</td>
+          <td>0.03</td>
+          <td>6450.0 – 10403.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Favorable">
+          <td><strong>Rice</strong></td>
+          <td>Kisumu</td>
+          <td>2.25</td>
+          <td>0.03</td>
+          <td>8204.0 – 12589.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Favorable">
+          <td><strong>Rice</strong></td>
+          <td>Baringo</td>
+          <td>2.25</td>
+          <td>0.04</td>
+          <td>43327.0 – 66453.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Favorable">
+          <td><strong>Rice</strong></td>
+          <td>Migori</td>
+          <td>2.27</td>
+          <td>0.05</td>
+          <td>10313.0 – 15772.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Favorable">
+          <td><strong>Rice</strong></td>
+          <td>Nyandarua</td>
+          <td>2.27</td>
+          <td>0.06</td>
+          <td>12613.0 – 20097.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Favorable">
+          <td><strong>Rice</strong></td>
+          <td>Homa Bay</td>
+          <td>2.29</td>
+          <td>0.07</td>
+          <td>12666.0 – 19312.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Favorable">
+          <td><strong>Rice</strong></td>
+          <td>Kiambu</td>
+          <td>2.29</td>
+          <td>0.08</td>
+          <td>10240.0 – 15643.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Favorable">
+          <td><strong>Rice</strong></td>
+          <td>West Pokot</td>
+          <td>2.3</td>
+          <td>0.08</td>
+          <td>37225.0 – 56177.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Favorable">
+          <td><strong>Rice</strong></td>
+          <td>Taita Taveta</td>
+          <td>2.33</td>
+          <td>0.12</td>
+          <td>68305.0 – 108390.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Favorable">
+          <td><strong>Rice</strong></td>
+          <td>Meru</td>
+          <td>2.37</td>
+          <td>0.15</td>
+          <td>29460.0 – 44090.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Favorable">
+          <td><strong>Rice</strong></td>
+          <td>Nyeri</td>
+          <td>2.37</td>
+          <td>0.15</td>
+          <td>13832.0 – 21262.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Favorable">
+          <td><strong>Rice</strong></td>
+          <td>Kirinyaga</td>
+          <td>2.38</td>
+          <td>0.17</td>
+          <td>6191.0 – 9452.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+        <tr data-crop="Rice" data-condition="Favorable">
+          <td><strong>Rice</strong></td>
+          <td>Murang'A</td>
+          <td>2.4</td>
+          <td>0.19</td>
+          <td>10786.0 – 16495.0</td>
+          <td class="condition-favorable">Favorable</td>
+        </tr>
+        
+      </tbody>
+    </table>
+  
+</section>
+
+    <!-- Appendix -->
+    <section id="appendix" class="section">
+      <h2>Appendix A: Model Description and Parameters</h2>
+
+      <h3>Crop Conditions Classes</h3>
+      <table>
+        <thead><tr><th>Class</th><th>Definition</th></tr></thead>
+        <tbody>
+          <tr><td class="condition-exceptional"><strong>Exceptional</strong></td><td>Conditions are much better than average at the time of reporting. Used only during the grain-filling through harvest stages.</td></tr>
+          <tr><td class="condition-favorable"><strong>Favorable</strong></td><td>Conditions range from slightly below to slightly above-average at reporting time.</td></tr>
+          <tr><td class="condition-watch"><strong>Watch</strong></td><td>Near average but with risk to final yields; recovery possible if conditions improve.</td></tr>
+          <tr><td class="condition-poor"><strong>Poor</strong></td><td>Well below average; yields likely 10–25% below average with limited recovery potential.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Data Sources</h3>
+      <table>
+        <thead><tr><th>Data Type</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td>NDVI</td><td>UMD GLAM system</td></tr>
+          <tr><td>ESI</td><td>NASA SERVIR Global</td></tr>
+          <tr><td>Precipitation</td><td>CHIRPS (historical), NOAA CPC</td></tr>
+          <tr><td>Precipitation Forecast</td><td>CHIRPS-GEFS</td></tr>
+          <tr><td>Soil Moisture</td><td>NASA–USDA Global (SMOS)</td></tr>
+          <tr><td>Temperature</td><td>NOAA CPC</td></tr>
+        </tbody>
+      </table>
+
+      <div class="disclaimer">
+        <h4>Disclaimer</h4>
+        <p>The opinions expressed in this report are those of the authors and do not necessarily reflect the official policy or position of AGRA, its employees, partners, or affiliates. While every effort has been made to ensure the accuracy and completeness of the information, we assume no responsibility for any errors or omissions.</p>
+        <p><strong>Project Lead:</strong> Dr. Catherine Nakalembe<br/>
+           <strong>Team:</strong> Xylem Lab / NASA Harvest–Africa Team<br/>
+           <strong>Date:</strong> August</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // Loop through all regional tables
+  document.querySelectorAll("table.regional-table").forEach(table => {
+    const countryId = table.id.replace("regional-table-", "");
+    const cropSel = document.getElementById(`crop-filter-${countryId}`);
+    const condSel = document.getElementById(`cond-filter-${countryId}`);
+    const downloadBtn = document.querySelector(`.download-btn[data-table="${table.id}"]`);
+
+    // --- FILTERING ---
+    function applyFilters() {
+      const crop = cropSel.value;
+      const cond = condSel.value;
+      table.querySelectorAll("tbody tr").forEach(row => {
+        const rowCrop = row.getAttribute("data-crop");
+        const rowCond = row.getAttribute("data-condition");
+        let show = true;
+        if (crop !== "All" && rowCrop !== crop) show = false;
+        if (cond !== "All" && rowCond !== cond) show = false;
+        row.style.display = show ? "" : "none";
+      });
+    }
+    cropSel.addEventListener("change", applyFilters);
+    condSel.addEventListener("change", applyFilters);
+
+    // --- SORTING ---
+    table.querySelectorAll("th.sortable").forEach((th, idx) => {
+      let asc = true;
+      th.addEventListener("click", () => {
+        const rows = Array.from(table.querySelectorAll("tbody tr")).filter(r => r.style.display !== "none");
+        rows.sort((a,b) => {
+          const aVal = parseFloat(a.children[idx].innerText) || 0;
+          const bVal = parseFloat(b.children[idx].innerText) || 0;
+          return asc ? aVal - bVal : bVal - aVal;
+        });
+        asc = !asc;
+        rows.forEach(r => table.querySelector("tbody").appendChild(r));
+      });
+    });
+
+    // --- DOWNLOAD CSV ---
+    if (downloadBtn) {
+      downloadBtn.addEventListener("click", (event) => {
+        event.stopPropagation(); // prevent double trigger
+        event.preventDefault();
+
+        let csv = [];
+        const rows = table.querySelectorAll("tr");
+        rows.forEach((row, ridx) => {
+          if (row.style.display === "none") return; // skip hidden
+          const cols = row.querySelectorAll("th,td");
+          let values = Array.from(cols).map(c => c.innerText.trim());
+
+          if (ridx === 0) {
+            // Header: split Min–Max
+            values = values.flatMap(v => {
+              if (v.includes("Min–Max")) return ["Min Production (tons)", "Max Production (tons)"];
+              return [v];
+            });
+          } else {
+            // Data rows: split ranges
+            values = values.flatMap(v => {
+              if (v.includes("–")) {
+                const parts = v.split("–").map(p => p.trim());
+                if (parts.length === 2) return [parts[0], parts[1]];
+              }
+              return [v];
+            });
+          }
+          csv.push(values.map(v => `"${v}"`).join(","));
+        });
+
+        const blob = new Blob([csv.join("\n")], { type: "text/csv" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${countryId}_regional_table.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }); // attach once only
+    }
+  });
+});
+</script>
+
+</body>
+</html>
+```
